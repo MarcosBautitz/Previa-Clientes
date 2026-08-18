@@ -1,10 +1,35 @@
-<!DOCTYPE html>
+// Ajustes no export estatico antes de publicar no GitHub Pages.
+// Uso: node finalizar.mjs <pasta out>
+
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+
+const OUT = process.argv[2];
+if (!OUT) throw new Error('informe a pasta out');
+
+const BASE = '/Previa-Clientes/sistema-harmonelle';
+const EMAIL = 'demo@harmonelle.com.br';
+const SENHA = 'Harmonelle2026';
+
+function listarHtml(dir) {
+  const achados = [];
+  for (const nome of readdirSync(dir)) {
+    const caminho = join(dir, nome);
+    if (statSync(caminho).isDirectory()) achados.push(...listarHtml(caminho));
+    else if (nome.endsWith('.html')) achados.push(caminho);
+  }
+  return achados;
+}
+
+// ─── 1. Pagina de entrada, no lugar do redirect do produto (que o export
+//        estatico nao consegue gerar) ────────────────────────────────────────
+const entrada = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Previa · Harmonelle Clinic</title>
+<title>Previa \u00b7 Harmonelle Clinic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -48,24 +73,46 @@
 
     <div class="acesso">
       <h2>Acesso</h2>
-      <div class="linha"><span>E-mail</span><span>demo@harmonelle.com.br</span></div>
-      <div class="linha"><span>Senha</span><span>Harmonelle2026</span></div>
+      <div class="linha"><span>E-mail</span><span>${EMAIL}</span></div>
+      <div class="linha"><span>Senha</span><span>${SENHA}</span></div>
     </div>
 
-    <a class="botao" href="/Previa-Clientes/sistema-harmonelle/login/">Entrar no sistema</a>
+    <a class="botao" href="${BASE}/login/">Entrar no sistema</a>
 
     <p class="nota">Prévia para aprovação. Página não indexada e de acesso restrito a quem tem o link.</p>
     <p class="assinatura">Prazer em se ver.</p>
   </main>
-<script>(function(){
-  var EMAIL="demo@harmonelle.com.br", SENHA="Harmonelle2026";
+</body>
+</html>
+`;
+writeFileSync(join(OUT, 'index.html'), entrada);
+console.log('index.html: pagina de entrada');
+
+// ─── 2. /contacts virou aba de configuracoes; o redirect do produto tambem
+//        nao sobrevive ao export ─────────────────────────────────────────────
+const redirecionar = (destino) => `<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="robots" content="noindex, nofollow">
+<meta http-equiv="refresh" content="0; url=${destino}"><title>Redirecionando</title></head>
+<body><script>location.replace('${destino}');</script></body></html>
+`;
+try {
+  writeFileSync(join(OUT, 'contacts', 'index.html'), redirecionar(`${BASE}/settings/contacts/`));
+  console.log('contacts/index.html: redirect');
+} catch {
+  console.log('contacts/index.html: nao existe, ignorado');
+}
+
+// ─── 3. Marcas da previa em toda pagina do app ───────────────────────────────
+const NOINDEX = '<meta name="robots" content="noindex, nofollow"/>';
+const SCRIPT_PREVIA = `<script>(function(){
+  var EMAIL=${JSON.stringify(EMAIL)}, SENHA=${JSON.stringify(SENHA)};
   // Titulo da aba deixa claro que e previa, inclusive apos navegacao interna.
   function marcarTitulo(){
     if (document.title.indexOf('Prévia') !== 0) document.title = 'Prévia · ' + document.title;
   }
   // Aviso discreto, so na tela de entrada, com o acesso a mao.
   function aviso(){
-    var naLogin = /\/login\/?$/.test(location.pathname);
+    var naLogin = /\\/login\\/?$/.test(location.pathname);
     var el = document.getElementById('previa-aviso');
     if (naLogin && !el) {
       el = document.createElement('div');
@@ -85,5 +132,21 @@
   document.addEventListener('DOMContentLoaded', tick);
   tick();
   setInterval(tick, 400);
-})();</script></body>
-</html>
+})();</script>`;
+
+let tocados = 0;
+for (const arquivo of listarHtml(OUT)) {
+  let html = readFileSync(arquivo, 'utf8');
+  if (html.indexOf('previa-aviso') !== -1) continue;
+  if (html.indexOf('name="robots"') === -1) {
+    html = html.replace('</head>', `${NOINDEX}</head>`);
+  }
+  html = html.replace('</body>', `${SCRIPT_PREVIA}</body>`);
+  writeFileSync(arquivo, html);
+  tocados++;
+}
+console.log(`marcas de previa em ${tocados} paginas`);
+
+// ─── 4. GitHub Pages passa por Jekyll, que ignora pastas iniciadas com _ ─────
+writeFileSync(join(OUT, '.nojekyll'), '');
+console.log('.nojekyll gravado');

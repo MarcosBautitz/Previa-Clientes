@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="robots" content="noindex, nofollow">
+<meta http-equiv="refresh" content="0; url=/Previa-Clientes/sistema-harmonelle/settings/contacts/"><title>Redirecionando</title></head>
+<body><script>location.replace('/Previa-Clientes/sistema-harmonelle/settings/contacts/');</script><script>(function(){
+  var EMAIL="demo@harmonelle.com.br", SENHA="Harmonelle2026";
+  // Titulo da aba deixa claro que e previa, inclusive apos navegacao interna.
+  function marcarTitulo(){
+    if (document.title.indexOf('Prévia') !== 0) document.title = 'Prévia · ' + document.title;
+  }
+  // Aviso discreto, so na tela de entrada, com o acesso a mao.
+  function aviso(){
+    var naLogin = /\/login\/?$/.test(location.pathname);
+    var el = document.getElementById('previa-aviso');
+    if (naLogin && !el) {
+      el = document.createElement('div');
+      el.id = 'previa-aviso';
+      el.setAttribute('style','position:fixed;left:0;right:0;bottom:20px;z-index:60;text-align:center;'
+        + 'font:400 13px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;'
+        + 'color:rgba(36,30,23,.62);pointer-events:none;padding:0 16px');
+      el.innerHTML = 'Prévia do sistema · entre com <b style="font-weight:600;color:rgba(36,30,23,.8)">'
+        + EMAIL + '</b> e senha <b style="font-weight:600;color:rgba(36,30,23,.8)">' + SENHA
+        + '</b><br>Dados fictícios: nenhuma mensagem é enviada de verdade.';
+      document.body.appendChild(el);
+    } else if (!naLogin && el) {
+      el.remove();
+    }
+  }
+  function tick(){ marcarTitulo(); aviso(); }
+  document.addEventListener('DOMContentLoaded', tick);
+  tick();
+  setInterval(tick, 400);
+})();</script></body></html>
