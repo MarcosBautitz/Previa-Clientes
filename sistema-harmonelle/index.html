@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Harmonelle Clinic | Previa do sistema de atendimento</title>
+<meta name="description" content="Previa das telas do sistema de atendimento, agenda e prontuario da Clinica Harmonelle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --areia:#F6F1E9;
+    --creme:#EFE7DA;
+    --branco:#FDFBF7;
+    --ink:#241E17;
+    --cafe:#6E4F33;
+    --caramelo:#A97B4F;
+    --linha:#E3D8C8;
+    --salvia:#7A8B6F;
+    --serif:"Fraunces", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --max:1240px;
+    color-scheme: light;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--areia);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.65;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block}
+  a{color:var(--cafe)}
+
+  .envelope{max-width:var(--max);margin:0 auto;padding:0 22px}
+
+  /* ── Cabecalho ─────────────────────────────── */
+  header{
+    background:var(--branco);
+    border-bottom:1px solid var(--linha);
+    padding:38px 0 34px;
+  }
+  .marca{
+    font-family:var(--serif);
+    font-size:13px;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--caramelo);
+    margin:0 0 16px;
+    font-weight:500;
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(28px,4.2vw,44px);
+    line-height:1.14;
+    letter-spacing:-.01em;
+    margin:0 0 14px;
+  }
+  .abertura{
+    margin:0;
+    max-width:62ch;
+    font-size:clamp(15px,1.6vw,17px);
+    color:rgba(36,30,23,.76);
+  }
+
+  /* ── Aviso ─────────────────────────────────── */
+  .aviso{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    margin:26px 0 0;
+    padding:14px 18px;
+    background:var(--creme);
+    border:1px solid var(--linha);
+    border-radius:3px;
+    font-size:14.5px;
+    color:rgba(36,30,23,.8);
+    max-width:74ch;
+  }
+  .aviso strong{color:var(--ink);font-weight:600}
+  .aviso .selo{
+    flex:0 0 auto;
+    font-family:var(--serif);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--caramelo);
+    padding-top:3px;
+  }
+
+  /* ── Corpo ─────────────────────────────────── */
+  .corpo{
+    display:grid;
+    grid-template-columns:290px minmax(0,1fr);
+    gap:44px;
+    padding:44px 0 72px;
+    align-items:start;
+  }
+
+  /* ── Indice de telas ───────────────────────── */
+  .indice{position:sticky;top:24px}
+  .indice h2{
+    font-family:var(--serif);
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--caramelo);
+    font-weight:500;
+    margin:0 0 14px;
+  }
+  .lista{list-style:none;margin:0;padding:0}
+  .lista li{margin:0}
+  .lista button{
+    width:100%;
+    display:flex;
+    gap:12px;
+    align-items:baseline;
+    text-align:left;
+    background:none;
+    border:0;
+    border-left:2px solid transparent;
+    padding:9px 12px;
+    font:inherit;
+    font-size:14.5px;
+    color:rgba(36,30,23,.66);
+    cursor:pointer;
+    transition:color .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .lista button:hover{color:var(--ink);background:var(--branco)}
+  .lista button .num{
+    font-family:var(--serif);
+    font-size:11.5px;
+    color:var(--caramelo);
+    flex:0 0 20px;
+    letter-spacing:.04em;
+  }
+  .lista button[aria-current="true"]{
+    color:var(--ink);
+    background:var(--branco);
+    border-left-color:var(--salvia);
+    font-weight:500;
+  }
+
+  /* ── Palco ─────────────────────────────────── */
+  .palco{min-width:0}
+  .cabecalho-tela{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin:0 0 18px;
+    flex-wrap:wrap;
+  }
+  .cabecalho-tela h3{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(22px,2.8vw,30px);
+    margin:0 0 6px;
+    line-height:1.2;
+  }
+  .contador{
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--caramelo);
+    white-space:nowrap;
+  }
+  .legenda{
+    margin:0;
+    max-width:66ch;
+    color:rgba(36,30,23,.78);
+    font-size:15.5px;
+  }
+
+  .moldura{
+    margin:22px 0 0;
+    background:var(--branco);
+    border:1px solid var(--linha);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(36,30,23,.04), 0 12px 34px -18px rgba(36,30,23,.24);
+  }
+  .barra{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:11px 14px;
+    background:var(--creme);
+    border-bottom:1px solid var(--linha);
+  }
+  .bolinha{width:9px;height:9px;border-radius:50%;background:#D9CDBA}
+  .endereco{
+    margin-left:10px;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    color:rgba(36,30,23,.5);
+    font-family:var(--sans);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .moldura a.tela{display:block;background:var(--branco)}
+  .moldura img{width:100%;height:auto}
+
+  .rodape-palco{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    margin:16px 0 0;
+    flex-wrap:wrap;
+  }
+  .ampliar{
+    font-size:13.5px;
+    color:var(--cafe);
+    text-decoration:none;
+    border-bottom:1px solid var(--linha);
+    padding-bottom:2px;
+  }
+  .ampliar:hover{border-bottom-color:var(--caramelo)}
+  .navegacao{display:flex;gap:10px}
+  .navegacao button{
+    font:inherit;
+    font-size:13.5px;
+    padding:8px 18px;
+    background:var(--branco);
+    color:var(--ink);
+    border:1px solid var(--linha);
+    border-radius:2px;
+    cursor:pointer;
+    transition:background .18s ease, border-color .18s ease, color .18s ease;
+  }
+  .navegacao button:hover:not(:disabled){background:var(--creme);border-color:var(--caramelo)}
+  .navegacao button:disabled{opacity:.36;cursor:default}
+
+  /* ── Fechamento ────────────────────────────── */
+  footer{
+    background:var(--branco);
+    border-top:1px solid var(--linha);
+    padding:44px 0 56px;
+  }
+  footer h2{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(20px,2.4vw,26px);
+    margin:0 0 12px;
+  }
+  footer p{
+    margin:0 0 14px;
+    max-width:66ch;
+    color:rgba(36,30,23,.76);
+    font-size:15.5px;
+  }
+  .assinatura{
+    margin-top:30px;
+    padding-top:22px;
+    border-top:1px solid var(--linha);
+    font-size:13px;
+    color:rgba(36,30,23,.5);
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .assinatura em{font-family:var(--serif);font-style:italic}
+
+  @media (max-width:900px){
+    .corpo{grid-template-columns:1fr;gap:26px;padding:30px 0 52px}
+    .indice{position:static}
+    .lista{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding-bottom:8px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .lista li{flex:0 0 auto}
+    .lista button{
+      border-left:0;
+      border-bottom:2px solid transparent;
+      white-space:nowrap;
+      background:var(--branco);
+      border-radius:2px;
+    }
+    .lista button[aria-current="true"]{border-left:0;border-bottom-color:var(--salvia)}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="envelope">
+    <p class="marca">Harmonelle Clinic</p>
+    <h1>O sistema de atendimento da clínica, tela por tela</h1>
+    <p class="abertura">
+      Uma volta completa pelo painel que reúne conversas, funil, agenda, pacientes,
+      protocolos e prontuário em um lugar só. Cada tela abaixo é o sistema rodando de verdade,
+      capturada direto da aplicação.
+    </p>
+    <div class="aviso">
+      <span class="selo">Nota</span>
+      <span>
+        <strong>Todas as pacientes, conversas e valores desta prévia são fictícios</strong>,
+        criados só para mostrar as telas cheias. Nenhum dado real da clínica foi usado aqui.
+        O catálogo de procedimentos é o único conteúdo que vem da própria Harmonelle.
+      </span>
+    </div>
+  </div>
+</header>
+
+<main class="envelope corpo">
+
+  <nav class="indice" aria-label="Telas do sistema">
+    <h2>As telas</h2>
+    <ul class="lista" id="lista"></ul>
+  </nav>
+
+  <section class="palco" aria-live="polite">
+    <div class="cabecalho-tela">
+      <div>
+        <h3 id="titulo"></h3>
+        <p class="legenda" id="legenda"></p>
+      </div>
+      <span class="contador" id="contador"></span>
+    </div>
+
+    <div class="moldura">
+      <div class="barra">
+        <span class="bolinha"></span><span class="bolinha"></span><span class="bolinha"></span>
+        <span class="endereco" id="endereco"></span>
+      </div>
+      <a class="tela" id="link-tela" href="#" target="_blank" rel="noopener">
+        <img id="imagem" src="" alt="">
+      </a>
+    </div>
+
+    <div class="rodape-palco">
+      <a class="ampliar" id="ampliar" href="#" target="_blank" rel="noopener">Ver esta tela em tamanho real</a>
+      <div class="navegacao">
+        <button type="button" id="anterior">Anterior</button>
+        <button type="button" id="proxima">Próxima</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envelope">
+    <h2>O que ainda vem</h2>
+    <p>
+      Esta é a prévia visual. O passo seguinte é colocar o sistema no ar em endereço próprio,
+      com login para a equipe da clínica, para você navegar e usar de verdade em vez de só ver.
+    </p>
+    <p>
+      Sobre o prontuário: ele é a parte mais protegida do sistema. Só quem tem função clínica
+      abre, todo acesso fica registrado, e a inteligência artificial que atende no WhatsApp
+      nunca lê nem escreve nada dentro dele.
+    </p>
+    <div class="assinatura">
+      <span>Prévia para aprovação. Página não indexada e de acesso restrito a quem tem o link.</span>
+      <em>Prazer em se ver.</em>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var TELAS = [
+    {
+      arquivo: 'telas/01-entrada.jpg',
+      titulo: 'A entrada',
+      rotulo: 'Entrada',
+      endereco: 'harmonelle.app / entrar',
+      legenda: 'A porta do sistema, com a identidade da clínica. Cada pessoa da equipe entra com a própria conta, e o que ela enxerga depende do que pode enxergar.'
+    },
+    {
+      arquivo: 'telas/02-inbox.jpg',
+      titulo: 'Atendimento',
+      rotulo: 'Atendimento',
+      endereco: 'harmonelle.app / atendimento',
+      legenda: 'WhatsApp e Instagram na mesma caixa, com etiquetas, responsável e o histórico inteiro da paciente. Ninguém precisa abrir o celular pessoal para responder, e nada se perde quando alguém sai de férias.'
+    },
+    {
+      arquivo: 'telas/03-indicadores.jpg',
+      titulo: 'Indicadores',
+      rotulo: 'Indicadores',
+      endereco: 'harmonelle.app / painel',
+      legenda: 'Os últimos trinta dias em números: conversas ativas, tempo até a primeira resposta, cumprimento do prazo combinado, taxa de resolução e satisfação de quem foi atendida.'
+    },
+    {
+      arquivo: 'telas/04-graficos.jpg',
+      titulo: 'Onde o movimento acontece',
+      rotulo: 'Movimento',
+      endereco: 'harmonelle.app / painel',
+      legenda: 'Volume por dia, picos de horário, mensagens recebidas e enviadas, peso de cada canal e os assuntos que mais aparecem. Serve para decidir horário de equipe e onde investir.'
+    },
+    {
+      arquivo: 'telas/05-funil.jpg',
+      titulo: 'O funil',
+      rotulo: 'Funil',
+      endereco: 'harmonelle.app / funil',
+      legenda: 'Cada interessada vira um card e caminha do primeiro contato até o protocolo fechado. Dá para ver na hora quanto está parado em cada etapa e quem precisa de um retorno.'
+    },
+    {
+      arquivo: 'telas/06-pacientes.jpg',
+      titulo: 'Pacientes',
+      rotulo: 'Pacientes',
+      endereco: 'harmonelle.app / pacientes',
+      legenda: 'A lista de pacientes com o estado de cada uma na jornada: lead, em qualificação, avaliação agendada, em tratamento, em acompanhamento, concluída.'
+    },
+    {
+      arquivo: 'telas/07-ficha.jpg',
+      titulo: 'A ficha da paciente',
+      rotulo: 'Ficha',
+      endereco: 'harmonelle.app / pacientes',
+      legenda: 'Contato, jornada clínica, profissional responsável e estado operacional em um painel só, com cada alteração registrada.'
+    },
+    {
+      arquivo: 'telas/08-agenda.jpg',
+      titulo: 'Agenda',
+      rotulo: 'Agenda',
+      endereco: 'harmonelle.app / agenda',
+      legenda: 'Os atendimentos por período, com confirmação, reagendamento, cancelamento e registro de falta. O que aconteceu na sala fica ligado à paciente e ao protocolo dela.'
+    },
+    {
+      arquivo: 'telas/09-procedimentos.jpg',
+      titulo: 'Procedimentos',
+      rotulo: 'Procedimentos',
+      endereco: 'harmonelle.app / procedimentos',
+      legenda: 'O catálogo da clínica. O status de cada procedimento, ativo, rascunho ou inativo, controla o que a equipe e a inteligência artificial podem oferecer.'
+    },
+    {
+      arquivo: 'telas/10-protocolos.jpg',
+      titulo: 'Protocolos',
+      rotulo: 'Protocolos',
+      endereco: 'harmonelle.app / protocolos',
+      legenda: 'Tratamentos de várias sessões acompanhados do início à conclusão, paciente por paciente, sem depender da memória de ninguém.'
+    },
+    {
+      arquivo: 'telas/11-agente.jpg',
+      titulo: 'A recepção digital',
+      rotulo: 'Recepção digital',
+      endereco: 'harmonelle.app / inteligencia',
+      legenda: 'A assistente que acolhe, tira dúvidas e leva até a avaliação, com as regras da casa escritas: nunca promete resultado, nunca fecha preço por mensagem e nunca toca no prontuário.'
+    },
+    {
+      arquivo: 'telas/12-automacoes.jpg',
+      titulo: 'Automações',
+      rotulo: 'Automações',
+      endereco: 'harmonelle.app / automacoes',
+      legenda: 'Regras do tipo quando acontece isso, faça aquilo. Lead novo entra no funil sozinho, etiqueta de avaliação move a paciente de etapa, atendimento encerrado pede a avaliação do atendimento.'
+    },
+    {
+      arquivo: 'telas/13-canais.jpg',
+      titulo: 'Canais',
+      rotulo: 'Canais',
+      endereco: 'harmonelle.app / configuracoes',
+      legenda: 'WhatsApp e Instagram conectados na mesma central, com teste de conexão e sincronização. Trocar de número não faz o histórico sumir.'
+    },
+    {
+      arquivo: 'telas/14-contatos.jpg',
+      titulo: 'Contatos',
+      rotulo: 'Contatos',
+      endereco: 'harmonelle.app / contatos',
+      legenda: 'A base de contatos com canais, etiquetas e quantas conversas cada pessoa já teve com a clínica.'
+    }
+  ];
+
+  var atual = 0;
+
+  var elLista = document.getElementById('lista');
+  var elTitulo = document.getElementById('titulo');
+  var elLegenda = document.getElementById('legenda');
+  var elContador = document.getElementById('contador');
+  var elEndereco = document.getElementById('endereco');
+  var elImagem = document.getElementById('imagem');
+  var elLink = document.getElementById('link-tela');
+  var elAmpliar = document.getElementById('ampliar');
+  var elAnterior = document.getElementById('anterior');
+  var elProxima = document.getElementById('proxima');
+
+  TELAS.forEach(function (tela, i) {
+    var li = document.createElement('li');
+    var botao = document.createElement('button');
+    botao.type = 'button';
+    botao.innerHTML = '<span class="num">' + String(i + 1).padStart(2, '0') + '</span><span>' + tela.rotulo + '</span>';
+    botao.addEventListener('click', function () { mostrar(i); });
+    li.appendChild(botao);
+    elLista.appendChild(li);
+  });
+
+  var botoes = elLista.querySelectorAll('button');
+
+  function mostrar(i) {
+    atual = i;
+    var tela = TELAS[i];
+    elTitulo.textContent = tela.titulo;
+    elLegenda.textContent = tela.legenda;
+    elEndereco.textContent = tela.endereco;
+    elContador.textContent = String(i + 1).padStart(2, '0') + ' de ' + String(TELAS.length).padStart(2, '0');
+    elImagem.src = tela.arquivo;
+    elImagem.alt = 'Tela do sistema: ' + tela.titulo;
+    elLink.href = tela.arquivo;
+    elAmpliar.href = tela.arquivo;
+    elAnterior.disabled = i === 0;
+    elProxima.disabled = i === TELAS.length - 1;
+
+    for (var j = 0; j < botoes.length; j++) {
+      botoes[j].setAttribute('aria-current', j === i ? 'true' : 'false');
+    }
+
+    if (history.replaceState) {
+      history.replaceState(null, '', '#' + (i + 1));
+    }
+
+    // Adianta a proxima imagem para a troca ser instantanea.
+    if (TELAS[i + 1]) {
+      var prox = new Image();
+      prox.src = TELAS[i + 1].arquivo;
+    }
+  }
+
+  elAnterior.addEventListener('click', function () { if (atual > 0) mostrar(atual - 1); });
+  elProxima.addEventListener('click', function () { if (atual < TELAS.length - 1) mostrar(atual + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft' && atual > 0) mostrar(atual - 1);
+    if (e.key === 'ArrowRight' && atual < TELAS.length - 1) mostrar(atual + 1);
+  });
+
+  var inicial = parseInt((location.hash || '').replace('#', ''), 10);
+  mostrar(inicial >= 1 && inicial <= TELAS.length ? inicial - 1 : 0);
+</script>
+
+</body>
+</html>
