@@ -1209,6 +1209,17 @@ footer .base a:hover{color:var(--claro-escuro2)}
 .pausa:hover{background:rgba(55,64,71,1)}
 .poster-fallback{display:none}
 
+/* Link dentro de texto corrido, usado so nas duas chamadas de conferencia de
+   registro, no FAQ e na Sobre. Nao da para reaproveitar .link-luxo: ele e
+   inline-block com padding e uma area de toque de 44px em ::before, que dentro
+   de um paragrafo atropela as linhas de cima e de baixo. E o reset global
+   (a{text-decoration:none}) deixaria o link invisivel no meio da frase. Mesmo
+   tratamento visual que .priv a, que ja existia na pagina de Privacidade. */
+.link-conf{color:var(--cafe);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1px;text-decoration-color:rgba(100,103,72,.5);
+  transition:text-decoration-color 200ms var(--ease-curta)}
+.link-conf:hover{text-decoration-color:var(--cafe)}
+
 </style>
 </head>
 <body>
@@ -1653,7 +1664,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
         <p class="revela" style="font-size:16.5px;color:var(--ink2);margin-bottom:14px;max-width:58ch" data-copy="SOBRE-03-BIO2">Busco um resultado que não se anuncia. Se alguém olha e identifica o procedimento, para mim, o trabalho não ficou pronto: ficou visível.</p>
         <p class="revela" style="font-size:16.5px;color:var(--ink2);margin-bottom:14px;max-width:58ch" data-copy="SOBRE-03-BIO3">Por isso, cada avaliação começa pela leitura das proporções, pela anatomia e pelo que realmente existe indicação de fazer. A dose é calculada de acordo com cada pessoa, e dizer “não” também faz parte do meu trabalho quando um procedimento não é necessário.</p>
         <p class="revela" style="font-size:16.5px;color:var(--ink2);margin-bottom:14px;max-width:58ch" data-copy="SOBRE-03-BIO4">Esse jeito de trabalhar se tornou o método da Harmonelle: menos excesso, mais critérios e resultados que façam sentido para cada pessoa.</p>
-        <p class="revela" style="font-size:16.5px;color:var(--ink2);margin-bottom:14px;max-width:58ch" data-copy="SOBRE-03-BIO5">Os registros e habilitações são públicos e podem ser consultados nos sites dos CRBM 1 e CRBM 5, antes do agendamento.</p>
+        <p class="revela" style="font-size:16.5px;color:var(--ink2);margin-bottom:14px;max-width:58ch" data-copy="SOBRE-03-BIO5">Os registros e habilitações são públicos e podem ser consultados antes do agendamento, na <a class="link-conf" href="https://crbm-05.implanta.net.br/servicosonline/Publico/ConsultaInscritos/" target="_blank" rel="noopener">consulta pública do CRBM-5</a>, pelo número 015437, e na <a class="link-conf" href="https://crbm-01.implanta.net.br/servicosonline/Publico/ConsultaInscritos/" target="_blank" rel="noopener">consulta pública do CRBM-1</a>, pelo número 75894.</p>
         <div class="selos revela">
           <div class="selo"><span class="nome">Manu Maia</span><span class="reg">CRBM-5 015437</span></div>
           <div class="selo"><span class="nome">Anvisa</span><span class="reg">Produtos e equipamentos registrados</span></div>
@@ -2156,7 +2167,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
         <h2 class="titulo-sec largo revela" style="margin:0 auto" data-copy="PROC-FAQ-TITULO">O que todo mundo pergunta <em>antes de agendar</em>.</h2>
       </div>
       <div class="faq revela">
-        <details><summary data-copy="PROC-FAQ-P0">Biomédica pode aplicar botox e preenchimento?</summary><p data-copy="PROC-FAQ-R0">Pode, dentro da habilitação em Biomedicina Estética. É essa habilitação, e não apenas o diploma de biomedicina, que autoriza os procedimentos estéticos injetáveis, conforme as normas do Conselho Federal de Biomedicina. A Dra. Manu Maia é Biomédica Esteta, com registro CRBM-5 015437, ativo, e com a habilitação anotada no conselho. Registro e habilitação são públicos e podem ser conferidos no site do CRBM-5.</p></details>
+        <details><summary data-copy="PROC-FAQ-P0">Biomédica pode aplicar botox e preenchimento?</summary><p data-copy="PROC-FAQ-R0">Pode, dentro da habilitação em Biomedicina Estética. É essa habilitação, e não apenas o diploma de biomedicina, que autoriza os procedimentos estéticos injetáveis, conforme as normas do Conselho Federal de Biomedicina. A Dra. Manu Maia é Biomédica Esteta, com registro CRBM-5 015437, ativo, e com a habilitação anotada no conselho. Registro e habilitação são públicos: dá para conferir na <a class="link-conf" href="https://crbm-05.implanta.net.br/servicosonline/Publico/ConsultaInscritos/" target="_blank" rel="noopener">consulta pública do CRBM-5</a>, buscando pelo número 015437.</p></details>
         <details><summary data-copy="PROC-FAQ-P4b">Quanto custa?</summary><p data-copy="PROC-FAQ-R4b">O valor é definido depois da avaliação, porque depende do plano, e o plano depende do seu caso: o que você quer resolver, o que a anatomia pede e em quantas etapas faz sentido dividir. Não trabalhamos com tabela fechada nem pacote pronto, e não é esquiva: é que o mesmo procedimento custa diferente para pessoas diferentes. Na avaliação você recebe o plano e o orçamento por escrito, e decide depois. As formas de pagamento e as condições são informadas junto com o orçamento.</p></details>
         <details><summary data-copy="PROC-FAQ-P11">O procedimento que eu quero não está no site. Vocês fazem?</summary><p data-copy="PROC-FAQ-R11">Provavelmente sim. Esta página traz os mais procurados, explicados por inteiro, e não a lista completa do que a clínica faz. Pergunte no WhatsApp antes de marcar: a resposta vem na hora. E se for algo que a Dra. Manu não faz, você ouve isso com a mesma clareza, junto com a indicação de quem faz.</p></details>
         <details><summary data-copy="PROC-FAQ-P6">E se eu não gostar do resultado?</summary><p data-copy="PROC-FAQ-R6">Todo procedimento injetável inclui retorno de revisão, e é nele que se ajusta o que precisa de ajuste. Nos preenchimentos, o ácido hialurônico é absorvível e, na maior parte dos casos, pode ser dissolvido, com limites e riscos que são explicados na avaliação. A conduta conservadora existe justamente para isso: acrescentar depois é sempre possível, tirar excesso é mais difícil. Por isso a dose começa baixa, mesmo quando você pede mais.</p></details>
@@ -2277,7 +2288,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
     <div class="wrap priv" style="max-width:820px">
 
       <h2 data-copy="PRIV-02-T">1. Quem é responsável pelos seus dados</h2>
-      <p data-copy="PRIV-02-P">A <b>EMED Clínica Avançada e Instituto LTDA</b>, CNPJ 61.548.761/0001-77, que atende sob a marca Clínica Harmonelle, na Rua Benjamin Constant, 2320, Sala 03, Escola Agrícola, Blumenau, SC, CEP 89035-190. Somos a controladora dos seus dados, nos termos da Lei nº 13.709/2018, a LGPD. A responsável técnica pelos atendimentos é a Dra. Manu Maia, Biomédica Esteta, CRBM-5 015437.</p>
+      <p data-copy="PRIV-02-P">A <b>EMED Clínica Avançada e Instituto LTDA</b>, CNPJ 61.548.761/0001-77, que atende sob a marca Clínica Harmonelle, na Rua Benjamin Constant, 2320, Sala 03, Escola Agrícola, Blumenau, SC, CEP 89035-190. Somos a controladora dos seus dados, nos termos da Lei nº 13.709/2018, a LGPD. A responsável técnica pelos atendimentos é a Dra. Manu Maia, registrada no conselho como Emanuelle Francielle Maia da Silva, Biomédica Esteta, CRBM-5 015437, com especialidade em Biomedicina Estética registrada no conselho.</p>
       <p data-copy="PRIV-02-P2">Esta política vale para o site, para o WhatsApp, para o e-mail, para o Instagram e para o atendimento presencial na clínica.</p>
 
       <h2 data-copy="PRIV-03-T">2. Com quem falar sobre privacidade</h2>
@@ -2388,9 +2399,12 @@ footer .base a:hover{color:var(--claro-escuro2)}
          direita. O CSS usa grid 1fr/auto/1fr, e nao space-between: com
          space-between o item do meio so fica no centro por acidente, quando
          os dois das pontas tem largura parecida, e aqui eles nao tem.
-         Quando o numero do CRBM-5 da clinica chegar, entra depois do CNPJ. -->
+         O numero do CRBM-5 da PJ chegou em 2026-08-20, pela consulta publica do
+         conselho, e entrou depois do CNPJ: e 2025-2767. O art. 9, a da Resolucao
+         CFBM 330/2020 exige os DOIS numeros de inscricao, o da profissional e o
+         da pessoa juridica, em qualquer publicidade. Nao apagar nenhum dos dois. -->
     <div class="base">
-      <span data-copy="FOOTER-PJ">EMED Clínica Avançada e Instituto LTDA · CNPJ 61.548.761/0001-77</span>
+      <span data-copy="FOOTER-PJ">EMED Clínica Avançada e Instituto LTDA · CNPJ 61.548.761/0001-77 · CRBM-5 nº 2025-2767</span>
       <span><a href="#privacidade" data-page-link="privacidade" data-copy="FOOTER-LEGAL">Política de Privacidade</a></span>
       <span data-copy="FOOTER-PROF">Dra. Manu Maia · Biomédica Esteta · CRBM-5 015437</span>
     </div>
