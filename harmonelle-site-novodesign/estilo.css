@@ -1265,6 +1265,16 @@ body.consent-aberto .acao-fixa{display:none}
 .balao-msg{font-size:14px;line-height:1.55;color:var(--ink2);margin-bottom:12px}
 .balao-cta{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;
   letter-spacing:.13em;text-transform:uppercase;color:var(--cafe);min-height:44px}
+/* O CARTAO INTEIRO leva ao WhatsApp. O retangulo invisivel sai do proprio link
+   e cobre o balao, que ja e `position:fixed` e portanto ancora o `inset:0`.
+   E a mesma tecnica do `.card`, e a mesma armadilha: sem ancora posicionada
+   ele subiria e cobriria outra coisa.
+
+   O X fica em z-index MAIOR, senao fechar viraria abrir o WhatsApp, que e o
+   erro classico deste componente. */
+.balao{cursor:pointer}
+.balao-cta::before{content:"";position:absolute;inset:0;z-index:1}
+.balao-x{z-index:2}
 @media(max-width:760px){
   .balao{right:14px;left:14px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}
   .balao::after{display:none}
