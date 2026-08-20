@@ -1,0 +1,1293 @@
+/* =========================================================================
+   HARMONELLE v3
+   Sistema visual, componentes e movimento.
+
+   Regra de marca que governa tudo aqui: o dossie de identidade diz, com
+   essas palavras, que a Harmonelle nao deve "tentar parecer premium".
+   Entao o refinamento vem de contencao, ar, foto boa e tempo bem calibrado.
+   Nao ha dourado brilhante, marmore, serifa gigante em caixa alta, brilho
+   de foil, glow colorido nem gradiente animado em nenhum lugar deste arquivo.
+
+   FONTES E CORES AINDA SAO PROVISORIAS. Fraunces substitui a Megafield e
+   Inter substitui a Helvena. A paleta foi deduzida do PDF. Enquanto isso
+   nao for trocado pelos arquivos oficiais, o que a cliente aprova nao e a
+   identidade dela. Isso e bloqueante para o aceite final.
+   ========================================================================= */
+
+:root{
+  /* ---- cor: a PALETA OFICIAL da Harmonelle, do manual de marca V1.0 da
+         Ktarze Brands e do PDF Paleta de Cores. Nada aqui e aproximacao.
+
+         Cinco cores oficiais:
+           Branco Antigo   #FEF7E3     Verde Oliva     #81865D
+           Bege Rosado     #E6BCA3     Terracota Claro #CE9F83
+           Petroleo Escuro #374047
+
+         O FATO QUE GOVERNA TUDO ABAIXO, e foi medido: das cinco, so o
+         Petroleo carrega texto. Verde Oliva da 3,57:1 e so serve a texto
+         grande; Terracota da 2,20:1 e Bege Rosado 1,62:1, e os dois reprovam
+         em qualquer texto. E paleta de superficie e de acento, e nao de
+         texto. Por isso tres tokens sao DERIVADOS, cada um mantido na matiz
+         da cor de marca que o originou. ---- */
+  --branco:#FEF7E3;         /* Branco Antigo puro */
+  --areia:#FCF1DD;          /* derivado: Branco Antigo + 10% Bege Rosado */
+  --creme:#F7E5D0;          /* derivado: Branco Antigo + 30% Bege Rosado */
+  --ink:#374047;            /* Petroleo puro. 9,88:1 no branco, 9,45:1 na areia,
+                               8,59:1 no creme. E a cor de acao do site */
+  --ink2:#586772;           /* derivado do Petroleo. 5,46:1 corpo de texto */
+  --cafe:#646748;           /* derivado do Verde Oliva. 5,49:1 rotulos */
+  --caramelo:#81865D;       /* Verde Oliva puro. 3,57:1 sobre claro.
+                               So texto grande, filete de 1px e anel de foco, e
+                               SO SOBRE FUNDO CLARO: sobre o ink ele cai para
+                               2,77:1, contra 4,43:1 do caramelo antigo. Onde
+                               ele aparecia dentro de .escuro, agora e
+                               --claro-escuro2. */
+  --ink-hover:#6B7277;      /* Petroleo clareado 26%. E o TOM DE HOVER dos
+                               botoes preenchidos, e existe por um motivo
+                               especifico: o hover tem de ser CLAREAMENTO na
+                               mesma matiz, e nunca troca de cor.
+                               O que estava aqui antes era o --cafe, que na
+                               paleta antiga era marrom subindo sobre marrom,
+                               matiz 28 sobre 32 graus, ou seja, mesma familia.
+                               Com a paleta oficial o --cafe virou oliva, e o
+                               mesmo hover passou a girar a matiz de 206 para
+                               66 graus: o botao ficava AMARELADO ao passar o
+                               mouse. O Marcos viu e reprovou em 19/08/2026.
+                               Medido: este tom da 2,16:1 de salto sobre o
+                               Petroleo, contra 2,22:1 que a paleta antiga
+                               fazia, ou seja, mesma forca de hover; e mantem o
+                               rotulo em 4,57:1, acima do minimo de 4,5.
+                               Clarear mais reprova o rotulo: em 27% ele cai
+                               para 4,44:1. */
+  --ouro:#A88347;           /* FORA da paleta oficial, por decisao do Marcos em
+                               19/08/2026. 3,27:1 no claro e 3,02:1 no petroleo,
+                               e o unico dourado acima de 3:1 nos DOIS fundos.
+                               So filete de 1px, moldura, icone e selo. Nunca
+                               texto, nunca preenchimento, nunca gradiente, e no
+                               maximo uma vez por dobra da tela. */
+  --linha:#E6BCA3;          /* Bege Rosado puro. 1,62:1. Divisoria decorativa.
+                               ATENCAO: sobre o creme ele cai para 1,41:1 e some.
+                               Nao ponha acordeao nem tabela na secao creme. */
+  --contorno:rgba(55,64,71,.62); /* Petroleo a 62%. 3,45:1. Obrigatorio quando a
+                               borda e a unica indicacao de que e clicavel. */
+  --claro-escuro:#FEF7E3;   /* Branco Antigo. 9,88:1 sobre o ink */
+  --claro-escuro2:#E6BCA3;  /* Bege Rosado. 6,08:1 sobre o ink */
+  --rodape-base:#CFA186;    /* derivado do Terracota, clareado 0,8 ponto de L.
+                               4,58:1 sobre o ink. O Terracota puro da 4,49:1 e
+                               reprovaria AA por 0,01. */
+
+  /* ---- tipografia ---- */
+  --serif:"Fraunces", Georgia, serif;   /* provisoria: substitui a Megafield */
+  --sans:"Inter", Helvetica, Arial, sans-serif; /* provisoria: substitui a Helvena */
+
+  /* ---- espaco ---- */
+  --max:1120px;
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px;
+  --e6:32px; --e7:48px; --e8:64px; --e9:96px;
+  --sec:clamp(72px,8.5vw,116px);
+  --sec-ancora:clamp(96px,12vw,168px);
+
+  /* ---- movimento ---- */
+  --ease-suave:cubic-bezier(.22,.61,.36,1);
+  --ease-saida:cubic-bezier(.16,1,.3,1);
+  --ease-curta:cubic-bezier(.4,0,.2,1);
+  --t-micro:160ms; --t-inter:380ms; --t-lento:820ms; --t-foto:1200ms;
+
+  /* ---- sombra: sempre tinta, nunca preto puro, senao suja o creme ---- */
+  --sombra-1:0 1px 2px rgba(55,64,71,.06);
+  --sombra-2:0 18px 40px -16px rgba(55,64,71,.24);
+
+  --h-header:74px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--branco);
+  font-weight:400;            /* v2 usava 300. Inter Light em 14px com
+                                 antialiasing some para quem tem 45 anos. */
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:400;line-height:1.15}
+h1,h2{letter-spacing:-.012em}
+h1 em,h2 em,h3 em{font-style:italic;font-weight:340}
+section{padding:var(--sec) 0}
+.sec-areia{background:var(--areia)}
+.sec-creme{background:var(--creme)}
+.center{text-align:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.eyebrow{
+  font-family:var(--sans);font-size:12px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cafe);font-weight:500;margin-bottom:18px;
+}
+
+/* =========================================================================
+   FOCO
+   O v2 nao tinha nenhuma regra :focus no arquivo inteiro. Quem navega por
+   teclado nao enxergava onde estava.
+   ATENCAO, esta regra MUDOU em 19/08/2026 e a nota antiga estava certa para a
+   paleta antiga. O caramelo de antes dava 4,43:1 sobre o ink e 3,61:1 sobre a
+   areia, entao um anel unico resolvia tudo, inclusive dentro do botao solido.
+
+   Com a paleta oficial isso deixou de ser possivel, e nao e questao de gosto,
+   e sim de aritmetica: um anel com 3:1 sobre o creme precisa de luminancia
+   ABAIXO de 0,235, e um anel com 3:1 sobre o Petroleo precisa de luminancia
+   ACIMA de 0,248. Nao existe um unico valor que atenda aos dois. Logo, sao
+   dois aneis: Verde Oliva no claro, 3,57:1, e Bege Rosado no escuro e dentro
+   do botao solido, 6,08:1.
+   ========================================================================= */
+:where(a,button,summary,details,input,select,textarea,video,[tabindex]):focus-visible{
+  outline:2px solid var(--caramelo);
+  outline-offset:3px;
+  border-radius:2px;
+}
+/* o anel do claro sumiria sobre o Petroleo: 2,77:1, abaixo do minimo de 3 */
+.escuro :focus-visible,
+.btn:focus-visible,
+footer :focus-visible{outline-color:var(--claro-escuro2)}
+
+/* =========================================================================
+   BOTOES
+   Seis niveis. Cada um com um vocabulario de movimento proprio, para que
+   dois niveis nunca leiam como o mesmo botao.
+   Regra de ouro: nunca dois de nivel 1 na mesma dobra. Luxo e ter uma saida
+   obvia, nao varias.
+   ========================================================================= */
+
+/* ---- Nivel 1: acao principal. Preenchimento que sobe de baixo ----
+   O rotulo fica em <span class="rot"> justamente para que o ::before possa
+   passar por tras dele. 101% e nao 100% para matar a linha de subpixel que
+   aparece no Safari em escala fracionaria. */
+.btn{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:56px;padding:17px 34px;
+  font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:.06em;
+  color:var(--branco);background:var(--ink);
+  border:1px solid var(--ink);border-radius:2px;cursor:pointer;
+  box-shadow:var(--sombra-1);
+  transition:letter-spacing var(--t-inter) var(--ease-suave),
+             box-shadow 300ms var(--ease-curta),
+             transform 300ms var(--ease-curta);
+}
+.btn::before{
+  content:"";position:absolute;inset:0;background:var(--ink-hover);z-index:-1;
+  transform:translateY(101%);
+  transition:transform var(--t-inter) var(--ease-suave);
+}
+.btn:hover::before{transform:translateY(0)}
+.btn:hover{letter-spacing:.078em;transform:translateY(-1px);box-shadow:var(--sombra-2)}
+.btn:active{transform:translateY(0);transition-duration:90ms;filter:brightness(.94)}
+.btn .rot,.btn svg,.btn .seta{position:relative;z-index:1}
+.btn svg{width:17px;height:17px;fill:currentColor;flex-shrink:0}
+
+/* =========================================================================
+   A MOLDURA DOURADA E O PING
+   Escolha do Marcos em 19/08/2026, primeiro no link da bio e depois aqui.
+
+   A moldura e o gesto de etiqueta de perfumaria: uma segunda borda de respiro
+   que isola o botao do resto da pagina. E dela que vem a forca de chamada,
+   junto com o tamanho, e nao de cor saturada. Medido: o Petroleo salta 9,88:1
+   do fundo, enquanto um botao terracota daria 2,07:1 e um dourado preenchido
+   2,96:1. Nesta paleta, botao colorido chama MENOS atencao que botao escuro.
+
+   POR QUE EXISTE UM INVOLUCRO, e nao um pseudo-elemento no proprio botao.
+   Duas razoes, e as duas quebrariam em silencio:
+
+     1. `.btn` tem `overflow:hidden`, que ele precisa para o preenchimento do
+        hover subir por tras do rotulo. Qualquer pseudo-elemento em `inset`
+        NEGATIVO seria simplesmente cortado, e a moldura nao apareceria.
+     2. `.btn::before` JA E o preenchimento do hover. Usa-lo para o ping
+        mataria o hover de todos os botoes do site de uma vez.
+
+   Por isso o `<span class="ouro">` em volta. No link da bio nao foi preciso,
+   porque la o `.cta` nao recorta e nao tem `::before`.
+
+   O outline continua reservado ao anel de foco: se a moldura o ocupasse, quem
+   navega por teclado ficaria sem indicacao de onde esta.
+
+   E fica so em quatro botoes do site inteiro, de dezesseis. Dourado repetido
+   deixa de ser charme e vira tema, que e o que a regra do sistema proibe. */
+.ouro{position:relative;display:inline-flex;max-width:100%}
+.ouro::after{
+  content:"";position:absolute;inset:-7px;pointer-events:none;
+  border:1px solid var(--ouro);border-radius:3px
+}
+
+/* O ping: uma copia da moldura se solta e evapora para fora, como onda de
+   sonar. O botao NAO se mexe, porque botao que pulsa e vocabulario de
+   notificacao de aplicativo, que e urgencia, e nao de clinica.
+
+   Tres decisoes que nao sao estetica:
+   1. 88% do ciclo e imobilidade. Efeito continuo vira ruido e a pessoa
+      aprende a ignorar em dez segundos. E animacao sem pausa briga com a
+      rolagem em aparelho sem aceleracao de composicao.
+   2. So `transform` e `opacity`, as duas propriedades que o compositor anima
+      sem recalcular layout. Animar `inset` custaria um reflow por quadro.
+   3. `pointer-events:none`, senao o anel come o toque no botao justamente no
+      instante em que ele chama a pessoa para tocar.
+
+   A escala de 1,07 foi medida e nao chutada: em 1,14 o anel passava da
+   largura da janela no telefone e ACRESCENTAVA rolagem horizontal a pagina.
+   Se mexer neste numero, meca de novo. */
+.ouro--ping::before{
+  content:"";position:absolute;inset:-7px;pointer-events:none;
+  border:1px solid var(--ouro);border-radius:3px;
+  animation:ping 5s cubic-bezier(.16,1,.3,1) infinite
+}
+@keyframes ping{
+  0%,58%{transform:scale(1);opacity:0}
+  60%{transform:scale(1);opacity:.85}
+  100%{transform:scale(1.07);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  /* some o pulso, e nunca o acabamento: a moldura fixa continua ali */
+  .ouro--ping::before{animation:none;opacity:0}
+}
+
+/* botao claro, para usar dentro da secao escura */
+.btn--claro{background:var(--areia);color:var(--ink);border-color:var(--areia)}
+.btn--claro::before{background:var(--branco)}
+.btn--claro:hover{color:var(--ink)}
+
+/* ---- Nivel 2: contorno. Moldura interna que se aproxima da externa ----
+   Gesto emprestado de convite impresso e etiqueta de perfumaria. E o unico
+   lugar do site em que o caramelo aparece como moldura, e ainda assim com
+   1px e meia opacidade. */
+.btn-linha{
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:56px;padding:16px 32px;
+  font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:.06em;
+  color:var(--ink);background:transparent;cursor:pointer;
+  border:1px solid var(--contorno);border-radius:2px;
+  transition:border-color 300ms var(--ease-curta),
+             background-color 300ms var(--ease-curta),
+             letter-spacing var(--t-inter) var(--ease-suave);
+}
+.btn-linha::after{
+  content:"";position:absolute;inset:6px;pointer-events:none;
+  border:1px solid transparent;border-radius:1px;
+  transition:inset 460ms var(--ease-suave), border-color 320ms var(--ease-curta);
+}
+.btn-linha:hover{border-color:var(--ink);background-color:rgba(55,64,71,.05);letter-spacing:.075em}
+/* a moldura interna que se aproxima no hover: tinta de Petroleo, e nao
+   oliva. Oliva aqui lia como risco amarelo em volta do rotulo. */
+.btn-linha:hover::after{inset:3px;border-color:rgba(55,64,71,.38)}
+.btn-linha:active{background-color:rgba(55,64,71,.08);transition-duration:90ms}
+.btn-linha svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+.btn-linha--claro{color:var(--claro-escuro);border-color:rgba(254,247,227,.42)}
+.btn-linha--claro:hover{border-color:var(--areia);background-color:rgba(252,241,221,.07)}
+
+/* ---- Nivel 4: link com seta que estica ----
+   A seta nao translada, ela abre. Transladar e gesto de aplicativo,
+   esticar e gesto tipografico. Animar a largura de um traco de 1px
+   nao custa nada e a ponta permanece ancorada. */
+.seta{
+  position:relative;display:inline-block;flex-shrink:0;
+  width:14px;height:1px;background:currentColor;margin-left:2px;
+  transition:width var(--t-inter) var(--ease-saida);
+}
+/* A ponta gira em volta do PROPRIO CENTRO, e o centro dela fica na altura do
+   traco. O v3 girava em volta do canto superior direito, com top:-3px: o
+   vertice caia 3px acima do traco e a ponta aparecia solta, flutuando fora da
+   haste. Era o defeito de todas as 23 setas do site, porque todas usam esta
+   mesma regra. Com origem no centro, o vertice cai exatamente sobre a linha e
+   a ponta avanca ~1,4px alem dela, que e o encaixe correto. */
+.seta::after{
+  content:"";position:absolute;right:0;top:50%;width:7px;height:7px;
+  border-top:1px solid currentColor;border-right:1px solid currentColor;
+  transform:translateY(-50%) rotate(45deg);
+}
+.btn:hover .seta,.btn-linha:hover .seta,.link-seta:hover .seta,
+.card:hover .link-seta .seta{width:24px}
+
+/* ---- Nivel 3: link fantasma. Sublinhado que cresce do centro ----
+   Crescer do centro e nao da esquerda e a diferenca entre editorial e
+   template de blog. 480ms porque a linha percorre pouca distancia e
+   precisa ser lenta o bastante para ser lida como intencao. */
+.link-luxo{
+  position:relative;display:inline-block;
+  font-size:15px;letter-spacing:.04em;color:var(--ink2);
+  padding:6px 0 6px;
+  border-bottom:1px solid rgba(129,134,93,.6);
+  transition:color 200ms var(--ease-curta);
+}
+.link-luxo::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:var(--ink);transform:scaleX(0);transform-origin:50% 50%;
+  transition:transform 480ms var(--ease-saida);
+}
+/* area de toque de 44px sem mexer no desenho: o retangulo invisivel cresce
+   em volta do texto, centrado, entao a linha continua colada na palavra */
+.link-luxo::before{
+  content:"";position:absolute;left:0;right:0;top:50%;
+  transform:translateY(-50%);height:44px;
+}
+.link-luxo:hover{color:var(--ink)}
+.link-luxo:hover::after{transform:scaleX(1)}
+.link-luxo--claro{color:var(--claro-escuro2);border-bottom-color:rgba(129,134,93,.75)}
+.link-luxo--claro::after{background:var(--areia)}
+.link-luxo--claro:hover{color:var(--areia)}
+
+/* microcopy sob o CTA: diz o que acontece depois do clique.
+   Reduz o custo psicologico do toque, que e onde o funil vaza de verdade. */
+.pos-cta{font-size:13px;color:var(--ink2);margin-top:14px;max-width:390px;line-height:1.5}
+.center .pos-cta{margin-left:auto;margin-right:auto}
+.pos-cta--claro{color:var(--claro-escuro2)}
+
+/* =========================================================================
+   BARRA DE AVISO INTERNO: removida nesta versao.
+   Esta e a versao limpa, para apresentacao a cliente.
+   ========================================================================= */
+
+/* ---- header ---- */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(254,247,227,.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--linha);
+  transition:background-color 320ms var(--ease-suave),border-color 320ms var(--ease-suave);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:var(--h-header);
+     transition:height 320ms var(--ease-suave)}
+header.compacto{background:rgba(254,247,227,.985);border-bottom-color:rgba(55,64,71,.118)}
+header.compacto .nav{height:62px}
+header.compacto .logo{font-size:21px}
+.logo{display:inline-block;padding:10px 0;font-family:var(--serif);font-size:24px;
+      letter-spacing:.02em;transition:font-size 320ms var(--ease-suave)}
+.logo em{font-style:italic}
+.menu{display:flex;gap:30px;align-items:center;list-style:none}
+.menu a{
+  display:inline-block;font-size:13.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink2);padding:12px 0;border-bottom:1px solid transparent;
+  transition:color .2s,border-color .2s;
+}
+.menu a:hover,.menu a.ativo{color:var(--ink);border-bottom-color:var(--caramelo)}
+.nav .btn{min-height:46px;padding:12px 22px;font-size:13px}
+#burger{display:none;background:none;border:0;cursor:pointer;color:var(--ink);
+        width:46px;height:46px;align-items:center;justify-content:center;font-size:20px}
+
+/* ---- paginas ---- */
+.page{display:none}
+.page.ativa{display:block;animation:entra 340ms var(--ease-saida) both}
+@keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* =========================================================================
+   MIDIA
+   Todo o acervo da clinica e vertical: 2:3 e 3:4 nas fotos, 3:4 e 9:16 nos
+   videos. Nao ha uma unica foto deitada. Por isso a grade se rende ao
+   formato do acervo, e nao o contrario.
+
+   modo integra: a imagem define a altura, nada e cortado. Pecas editoriais.
+   modo recorte: o container define a altura, com corte ja decidido no build.
+   ========================================================================= */
+.midia{position:relative;overflow:hidden;border-radius:2px;background:var(--creme)}
+.midia img,.midia video{display:block;width:100%;height:auto}
+.midia--recorte img,.midia--recorte video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:var(--pos,50% 40%);
+}
+/* placeholder de foto ainda nao produzida: mantem o briefing visivel.
+
+   Os dois hex do degrade sao os UNICOS valores de cor deste arquivo que nao
+   sao token, e por isso ficam com a conta escrita ao lado: eles continuam a
+   mesma rampa das superficies, Branco Antigo #FEF7E3 recebendo Bege Rosado
+   #E6BCA3, so que mais adiante. O --creme e a rampa a 30%; estes sao 45% e
+   60%. Nao invente valor aqui: derive, senao entra cor fora da paleta pela
+   porta dos fundos, que foi exatamente o defeito da versao anterior. */
+.foto-pend{
+  background:linear-gradient(160deg,var(--creme),#F3DCC6 60%,#F0D4BD);
+  border:1px solid var(--linha);border-radius:2px;
+  display:flex;align-items:flex-end;position:relative;
+}
+.foto-pend span{
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--cafe);
+  padding:14px 16px;border-top:1px solid var(--linha);width:100%;
+  background:rgba(254,247,227,.72);
+}
+.foto-pend::before{
+  content:"";position:absolute;top:20px;left:20px;width:34px;height:34px;
+  border:1px solid var(--caramelo);border-radius:50%;opacity:.55;
+}
+
+/* ---- hero ---- */
+.hero{padding:clamp(56px,7vw,96px) 0 clamp(64px,8vw,104px)}
+.hero .grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+            gap:clamp(40px,5vw,72px);align-items:center}
+.hero h1{font-size:clamp(40px,5vw,64px);margin-bottom:24px}
+.hero p.sub{font-size:17.5px;color:var(--ink2);max-width:490px;margin-bottom:34px}
+.hero .acoes{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .midia img{animation:assenta 2400ms var(--ease-saida) both}
+@keyframes assenta{from{transform:scale(1.06)}to{transform:scale(1)}}
+/* O acervo e todo vertical, entao a altura precisa de teto: sem ele, uma
+   coluna larga multiplicada por 3/2 gera uma foto de mais de 1200px e a
+   primeira dobra deixa de caber na tela. O teto e o que mantem o CTA visivel. */
+.hero .midia{aspect-ratio:2/3;max-height:min(74vh,700px);width:100%}
+
+/* ---- barra de confianca ----
+   Invertida em relacao ao v2: o dado vem grande em serif e o rotulo pequeno
+   embaixo. Filete vertical entre as colunas, que faz a faixa parecer papel
+   timbrado em vez de rodape de sistema. */
+.confianca{border-top:1px solid var(--linha);border-bottom:1px solid var(--linha);
+           padding:38px 0;background:var(--branco)}
+.confianca ul{display:grid;grid-template-columns:repeat(4,1fr);gap:0;list-style:none;text-align:center}
+.confianca li{font-size:13px;letter-spacing:.02em;color:var(--ink2);padding:0 22px;
+              border-left:1px solid var(--linha);line-height:1.45}
+.confianca li:first-child{border-left:0}
+.confianca li b{display:block;font-family:var(--serif);font-size:clamp(22px,2.4vw,28px);
+                font-weight:400;color:var(--ink);letter-spacing:0;margin-bottom:6px;line-height:1.1}
+
+/* ---- manifesto: o silencio da pagina ----
+   Sem eyebrow, porque era justamente o eyebrow que fazia esta secao parecer
+   igual as outras cinco. No lugar, uma regua de 40px. */
+.manifesto{padding:var(--sec-ancora) 0}
+.regua{width:40px;height:1px;background:var(--caramelo);margin:0 auto 40px}
+.manifesto p{font-family:var(--serif);font-size:clamp(30px,3.6vw,44px);line-height:1.25;
+             max-width:21ch;margin:0 auto;font-weight:300}
+.manifesto p em{font-style:italic}
+
+/* ---- vitrine ---- */
+.grupo-titulo{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cafe);
+              font-weight:500;margin:var(--e7) 0 var(--e5);display:flex;align-items:center;gap:16px}
+.grupo-titulo::after{content:"";flex:1;height:1px;background:var(--linha)}
+
+/* auto-fill e nao auto-fit. Com auto-fit as trilhas vazias colapsam, e no v2
+   isso esticava a Rinomodelacao sozinha para os 1072px inteiros, com a foto
+   travada em 190px de altura: sobrava 12% da imagem. E 240px em vez de 255px
+   faz caber 4 colunas, o que elimina o card orfao no grupo Rosto. */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+.card{
+  position:relative;isolation:isolate;
+  background:var(--branco);border:1px solid var(--linha);border-radius:2px;
+  padding:0 0 26px;display:flex;flex-direction:column;
+  transition:transform 420ms var(--ease-saida),
+             box-shadow 420ms var(--ease-saida),
+             border-color 300ms var(--ease-curta);
+}
+.card .midia{aspect-ratio:3/4;border-bottom:1px solid var(--linha);border-radius:2px 2px 0 0}
+.card .midia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+                 transform:scale(1.001);transition:transform var(--t-foto) var(--ease-saida)}
+.card h3{font-size:22px;margin:22px 22px 8px}
+.card p{font-size:15px;line-height:1.6;color:var(--ink2);margin:0 22px 20px;flex:1}
+.card:hover{transform:translateY(-3px);box-shadow:var(--sombra-2);border-color:rgba(129,134,93,.42)}
+.card:hover .midia img{transform:scale(1.045)}
+
+/* Nivel 4 no rodape do card. O ::before estica a area clicavel para o card
+   inteiro, mantendo uma unica ancora semantica: bom para leitor de tela e
+   bom para o Google. No v2 o unico alvo era um texto de 12,5px sem padding. */
+.link-seta{
+  display:inline-flex;align-items:center;gap:9px;
+  margin:0 22px;padding:8px 0;
+  font-size:13px;letter-spacing:.09em;text-transform:uppercase;font-weight:500;
+  color:var(--cafe);transition:color 200ms var(--ease-curta);
+}
+.link-seta::before{content:"";position:absolute;inset:0;z-index:2}
+.card:hover .link-seta{color:var(--ink)}
+.card .tag{
+  position:absolute;top:14px;left:14px;z-index:3;margin:0;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  background:rgba(55,64,71,1);backdrop-filter:blur(6px);color:var(--branco);
+  padding:6px 11px;border-radius:2px;
+}
+/* o card de destaque ocupa duas colunas e deita, criando hierarquia real de
+   produto em vez de sete retangulos identicos */
+.card.destaque{grid-column:span 2;flex-direction:row;border-color:rgba(129,134,93,.5)}
+.card.destaque .midia{aspect-ratio:4/5;flex:0 0 44%;border-bottom:0;border-right:1px solid var(--linha);
+                      border-radius:2px 0 0 2px}
+.card.destaque .corpo{display:flex;flex-direction:column;justify-content:center;padding:26px 0}
+.card.destaque h3{font-size:25px;margin-top:0}
+
+/* ---- metodo: linha do tempo vertical ----
+   No v2 eram tres colunas iguais, o mesmo gesto da vitrine logo acima.
+   O numeral vira o unico elemento decorativo grande da Home. */
+.passos-linha{display:grid;grid-template-columns:auto 1fr;gap:0 var(--e6);
+              position:relative;margin-top:var(--e7)}
+.passos-linha::before{content:"";position:absolute;left:41px;top:34px;bottom:34px;
+                      width:1px;background:var(--linha)}
+.passo{display:contents}
+.passo .num{
+  font-family:var(--serif);font-size:clamp(52px,6vw,84px);font-style:italic;
+  color:var(--caramelo);line-height:.9;position:relative;z-index:1;
+  padding:10px 0 30px;background:var(--creme);text-align:center;min-width:84px;
+}
+.passo .txt{padding:16px 0 34px}
+.passo h3{font-size:26px;margin-bottom:10px}
+.passo p{font-size:15.5px;color:var(--ink2);max-width:56ch}
+
+/* ---- secao escura: a unica inversao de fundo do site ----
+   Cai exatamente onde a pagina precisa de gravidade, que e a pessoa que
+   assina o resultado. De quebra, resolve sozinha o problema dos tres fundos
+   claros separados por menos de 4% de luminancia. */
+.escuro{background:var(--ink);color:var(--claro-escuro2)}
+.escuro h2,.escuro h3{color:var(--areia)}
+.escuro .eyebrow{color:var(--claro-escuro2)}   /* 6,08:1. Ver nota do --caramelo */
+.escuro .grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(40px,5vw,72px);align-items:center}
+.escuro p{color:var(--claro-escuro2);max-width:56ch}
+.escuro .cred{font-size:13px;letter-spacing:.11em;text-transform:uppercase;
+              color:var(--claro-escuro2);margin-bottom:22px}  /* 6,08:1 */
+.escuro h2{font-size:clamp(32px,3.6vw,46px);margin-bottom:18px}
+.escuro .bio p{font-size:16.5px;margin-bottom:14px}
+.escuro .midia{aspect-ratio:2/3;max-height:min(72vh,660px);max-width:100%}
+
+/* ---- selo de credencial ----
+   Moldura dupla fina. Sem brasao, sem louro, sem escudo: a moldura ja
+   entrega "documento", e qualquer ilustracao derrubaria o registro. */
+.selo{position:relative;display:inline-block;padding:18px 26px;text-align:center;
+      border:1px solid var(--contorno);border-radius:2px}
+.selo::before{content:"";position:absolute;inset:4px;border:1px solid rgba(129,134,93,.35);border-radius:1px}
+.selo .nome{font-family:var(--serif);font-size:17px;display:block;margin-bottom:3px}
+.selo .reg{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--cafe)}
+.escuro .selo{border-color:rgba(254,247,227,.34)}
+.escuro .selo::before{border-color:rgba(129,134,93,.55)}
+.escuro .selo .nome{color:var(--areia)}
+.escuro .selo .reg{color:var(--claro-escuro2)}   /* 6,08:1 */
+.selos{display:flex;gap:16px;flex-wrap:wrap;margin-top:var(--e6)}
+
+/* ---- certificados, pagina Sobre ----
+   O assunto aqui NAO e design de diploma: e geografia. O que muda a autoridade
+   e a leitora saber que ela saiu do pais para aprender. Por isso o pais vem
+   grande, em serifa, e o certificado entra embaixo como prova.
+   Agrupado por pais, e nao numa grade unica de sete, por dois motivos: grade
+   unica de sete le como parede de diplomas e apaga a viagem, que e a mensagem;
+   e os quatro certificados de Moscou sao retrato enquanto os tres de Belgrado e
+   da Coreia sao paisagem, entao a orientacao ja separa os grupos sozinha.
+   Documento NUNCA e cortado: object-fit contain dentro de moldura de proporcao
+   fixa, sobre fundo claro. Certificado cortado deixa de ser prova. */
+.cert-pais + .cert-pais{margin-top:var(--e7)}
+.cert-pais .lugar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+                  padding-bottom:12px;border-bottom:1px solid var(--linha)}
+.cert-pais .lugar b{font-family:var(--serif);font-size:clamp(21px,2.1vw,26px);
+                    font-weight:400;color:var(--ink);letter-spacing:0}
+.cert-pais .lugar span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+                       color:var(--cafe)}
+.cert-pais .nota{font-size:15px;color:var(--ink2);margin-top:14px;max-width:66ch}
+
+/* Quatro colunas para os retratos de Moscou e TRES para os paisagens de
+   Belgrado e da Coreia. Em duas colunas, como estava, o certificado paisagem
+   saía com quase o dobro da area do retrato, e a hierarquia visual invertia:
+   Belgrado parecia mais importante que Moscou, que e onde estao as quatro
+   formacoes mais fortes. Em tres colunas as duas familias ficam na mesma
+   escala, e a coluna que sobra em cada grupo recebe texto em vez de vazio. */
+.cert-grade{display:grid;gap:18px;margin-top:var(--e5)}
+.cert-grade--4{grid-template-columns:repeat(4,1fr)}
+.cert-grade--3{grid-template-columns:repeat(3,1fr)}
+
+.cert{display:flex;flex-direction:column}
+.cert .doc{
+  position:relative;background:var(--branco);
+  border:1px solid var(--contorno);border-radius:2px;
+  padding:10px;overflow:hidden;
+  transition:border-color 320ms var(--ease-curta), box-shadow 320ms var(--ease-curta);
+}
+.cert .doc::after{content:"";position:absolute;inset:4px;pointer-events:none;
+                  border:1px solid rgba(129,134,93,.22);border-radius:1px}
+.cert:hover .doc{border-color:var(--caramelo);box-shadow:var(--sombra-1)}
+.cert-grade--4 .doc{aspect-ratio:3/4}
+.cert-grade--3 .doc{aspect-ratio:3/2}
+.cert .doc img{width:100%;height:100%;object-fit:contain;display:block}
+.cert h4{font-family:var(--sans);font-size:14.5px;font-weight:500;color:var(--ink);
+         margin:14px 0 5px;letter-spacing:.01em;line-height:1.3}
+.cert p{font-size:13.5px;line-height:1.5;color:var(--ink2)}
+
+/* O bloco de texto que fecha a composicao no lugar onde sobraria vazio, na
+   linha da Coreia, que tem um certificado so. Vazio ali leria como falta. */
+.cert-fecho{display:flex;flex-direction:column;justify-content:center;
+            padding:26px 30px;background:var(--branco);border-radius:2px;
+            border:1px solid var(--linha)}
+.cert-fecho--largo{grid-column:span 2}
+.cert-fecho b{font-family:var(--serif);font-size:clamp(18px,1.8vw,22px);
+              font-weight:400;line-height:1.25;margin-bottom:10px}
+.cert-fecho p{font-size:14.5px;line-height:1.55;color:var(--ink2)}
+/* O codigo de verificacao e o unico dado do conjunto que a leitora confere
+   sozinha, entao ele ganha tratamento de dado e nao de texto corrido. */
+.cert-fecho code{display:inline-block;margin-top:10px;font-family:var(--sans);
+                 font-size:13px;letter-spacing:.06em;color:var(--ink);
+                 background:var(--areia);padding:7px 11px;border-radius:2px;
+                 word-break:break-all}
+
+/* ---- bloco da avaliacao: o produto de entrada ---- */
+.aval-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(36px,4.5vw,64px);align-items:center}
+.aval-lista{list-style:none;margin-top:var(--e5)}
+.aval-lista li{display:grid;grid-template-columns:auto 1fr;gap:var(--e4);
+               padding:18px 0;border-top:1px solid var(--linha)}
+.aval-lista li:last-child{border-bottom:1px solid var(--linha)}
+/* DEFEITO PRE-EXISTENTE, corrigido aqui em 19/08/2026. Este rotulo usava
+   --caramelo em 15px sobre fundo claro, o que sempre reprovou AA: 3,61:1 com
+   a paleta antiga e 3,57:1 com a nova, contra o minimo de 4,5 para corpo. Era
+   violacao da propria regra escrita no token, que diz "nunca em texto pequeno
+   sobre fundo claro". O --cafe resolve sem sair da familia: e o mesmo Verde
+   Oliva, so que escurecido, e da 5,49:1. Medido nas duas versoes com a mesma
+   auditoria: o site de producao ainda tem a falha, e fica relatado. */
+.aval-lista .rot{font-family:var(--serif);font-size:15px;font-style:italic;
+                 color:var(--cafe);min-width:74px;padding-top:2px}
+.aval-lista .val{font-size:15.5px;color:var(--ink2)}
+.aval-lista .val b{color:var(--ink);font-weight:500}
+
+/* ---- objecao: unico componente com peso assimetrico, e funciona ---- */
+.objecao{background:var(--areia);border-left:2px solid var(--caramelo);
+         padding:24px 28px;border-radius:2px;margin:26px 0}
+.objecao b{font-family:var(--serif);font-size:18px;font-weight:500;font-style:italic;
+           display:block;margin-bottom:8px}
+.objecao p{font-size:15px;color:var(--ink2)}
+.objecoes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:var(--e7)}
+.objecoes .objecao{margin:0;background:var(--branco)}
+
+/* ---- prova de processo, no lugar das aspas vazias ----
+   Enquanto nao houver depoimento real coletado, moldura vazia comunica
+   ausencia, e nao discricao. Prova de processo funciona sem um unico
+   paciente e e exatamente o que a marca vende. */
+.provas{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:var(--e7);text-align:left}
+.prova{padding:28px 0 0;border-top:1px solid var(--linha)}
+.prova b{font-family:var(--serif);font-size:19px;font-weight:400;display:block;margin-bottom:8px}
+.prova p{font-size:14.5px;color:var(--ink2)}
+
+/* ---- vip ---- */
+.vip{border:1px solid var(--linha);background:var(--branco);border-radius:2px;
+     padding:40px 44px;display:flex;align-items:center;justify-content:space-between;gap:36px}
+.vip h3{font-size:25px;margin-bottom:8px}
+.vip p{font-size:15px;color:var(--ink2);max-width:520px}
+
+/* ---- acesso e discricao ---- */
+.acesso-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(36px,4.5vw,64px);align-items:center}
+.acesso-lista{list-style:none;margin-top:var(--e5)}
+.acesso-lista li{font-size:15.5px;color:var(--ink2);padding:13px 0 13px 28px;
+                 position:relative;border-bottom:1px solid var(--linha)}
+.acesso-lista li::before{content:"";position:absolute;left:2px;top:21px;width:8px;height:8px;
+                         border:1px solid var(--caramelo);border-radius:50%}
+.acesso-lista li b{color:var(--ink);font-weight:500}
+.regiao{font-size:14.5px;color:var(--ink2);margin-top:var(--e5);padding-top:var(--e5);
+        border-top:1px solid var(--linha)}
+
+/* ---- localizacao ---- */
+.local .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,4.5vw,56px);align-items:center}
+.local iframe{width:100%;height:400px;border:1px solid var(--linha);border-radius:2px;
+              filter:saturate(.6) contrast(.96)}
+.local h2{font-size:clamp(28px,3vw,40px);margin-bottom:20px}
+.dados p{font-size:15.5px;color:var(--ink2);margin-bottom:12px}
+.dados b{color:var(--ink);font-weight:500}
+.acoes{margin-top:28px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+
+.titulo-sec{font-size:clamp(30px,3.6vw,44px);max-width:15ch;margin-bottom:16px}
+.titulo-sec.largo{max-width:20ch}
+.center .titulo-sec{margin-left:auto;margin-right:auto}
+.sub-sec{font-size:16.5px;color:var(--ink2);max-width:58ch}
+.center .sub-sec{margin-left:auto;margin-right:auto}
+
+/* =========================================================================
+   PAGINA DE PROCEDIMENTOS
+   ========================================================================= */
+.chips{
+  position:sticky;top:var(--h-header);z-index:40;
+  background:rgba(254,247,227,.96);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--linha);overflow-x:auto;
+  scrollbar-width:none;
+  /* mascara nas pontas: e o que avisa que ha mais chips fora da tela.
+     No v2 o overflow existia sem nenhuma indicacao visual. */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 30px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 30px),transparent 100%);
+}
+.chips::-webkit-scrollbar{display:none}
+.chips ul{display:flex;gap:8px;list-style:none;padding:12px 24px;max-width:var(--max);margin:0 auto}
+.chips a{
+  display:inline-flex;align-items:center;min-height:44px;padding:0 18px;
+  font-size:13px;letter-spacing:.04em;white-space:nowrap;
+  border:1px solid var(--contorno);border-radius:999px;color:var(--ink2);
+  transition:background-color 220ms var(--ease-curta),color 220ms var(--ease-curta),
+             border-color 220ms var(--ease-curta);
+}
+.chips a:hover{border-color:var(--ink);color:var(--ink)}
+.chips a[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--branco)}
+
+.proc{border-top:1px solid var(--linha);padding:clamp(64px,7.5vw,96px) 0;
+      scroll-margin-top:calc(var(--h-header) + 70px)}
+.proc.sec-areia{border-top:0}
+.proc .eyebrow{margin-bottom:14px}
+.proc .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(36px,4.5vw,56px);align-items:start}
+.proc .gancho{font-size:clamp(27px,3.2vw,38px);margin-bottom:16px;max-width:18ch}
+.proc .oque{font-size:16px;color:var(--ink2);max-width:58ch}
+.proc .midia{aspect-ratio:4/5}
+/* o video do Hipro e vertical 9:16. Emoldurado no formato nativo e
+   centralizado, em vez de esticado num container deitado como no v2. */
+.proc .midia--vertical{aspect-ratio:9/16;max-width:340px;margin:0 auto}
+
+.paraquem{list-style:none;margin:22px 0 4px}
+.paraquem li{font-size:15px;color:var(--ink2);padding:12px 0 12px 28px;position:relative;
+             border-bottom:1px solid var(--linha)}
+.paraquem li::before{content:"";position:absolute;left:2px;top:20px;width:8px;height:8px;
+                     border:1px solid var(--caramelo);border-radius:50%}
+
+/* ---- box resumo ----
+   Melhor componente do v2. Muda pouco e ganha muito: o valor sai de sans
+   13,5px e vira serif 17px, o que o transforma de tabela de especificacao
+   tecnica em ficha de dossie. E o rotulo sobe de 10,5px para 11,5px. */
+.boxresumo{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:rgba(55,64,71,.165);border:1px solid rgba(55,64,71,.165);
+  border-radius:2px;overflow:hidden;margin-top:26px;
+}
+.boxresumo div{background:var(--branco);padding:20px 20px 18px}
+.sec-areia .boxresumo div{background:var(--areia)}
+.boxresumo b{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+             color:var(--cafe);margin-bottom:8px;font-weight:500}
+.boxresumo span{display:block;font-family:var(--serif);font-size:17px;font-weight:400;
+                line-height:1.35;color:var(--ink)}
+/* nota sob a grade: qualifica os quatro quadrantes de uma vez, em vez de
+   encher cada valor de ressalva */
+.box-nota{font-size:12.5px;line-height:1.5;color:var(--ink2);margin-top:10px}
+@media(min-width:921px){.proc .col-lado{position:sticky;top:calc(var(--h-header) + 78px)}}
+
+/* ---- riscos ----
+   COMPONENTE RETIRADO DO SITE a pedido do Marcos, em 2026-08-16: risco e
+   contraindicacao passam a ser tratados na anamnese e no plano por escrito,
+   e nao na pagina de procedimentos. O estilo fica aqui, sem uso, porque
+   restaurar os blocos e so devolver o HTML. Ver PROC-FAQ-R7 e PROC-INTRO-SUB,
+   que continuam dizendo que o tema existe e onde ele e tratado. ---- */
+.riscos{margin-top:26px;padding:20px 24px;border:1px solid var(--linha);
+        border-radius:2px;background:var(--branco)}
+.sec-areia .riscos{background:var(--areia)}
+.riscos b{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+          color:var(--cafe);margin-bottom:8px;font-weight:500}
+.riscos p{font-size:14.5px;color:var(--ink2)}
+
+/* ---- FAQ ----
+   O <details> nativo entrega acessibilidade de graca e e indexavel.
+   O sinal de "+" gira 90 graus e vira traco, em vez de trocar o glifo por
+   "x" como no v2, o que fazia o icone pular de tamanho. */
+.faq{max-width:780px;margin:var(--e7) auto 0}
+.faq details{border-bottom:1px solid var(--linha)}
+.faq summary{
+  font-family:var(--serif);font-size:19px;cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+  padding:22px 0;min-height:44px;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"";width:11px;height:11px;flex-shrink:0;
+  background:linear-gradient(var(--caramelo),var(--caramelo)) center/11px 1px no-repeat,
+             linear-gradient(var(--caramelo),var(--caramelo)) center/1px 11px no-repeat;
+  transition:transform 420ms var(--ease-saida);
+}
+.faq details[open] summary::after{
+  transform:rotate(90deg);
+  background:linear-gradient(var(--caramelo),var(--caramelo)) center/11px 1px no-repeat;
+}
+.faq details p{font-size:15px;color:var(--ink2);padding:0 0 24px;max-width:66ch}
+
+/* =========================================================================
+   RODAPE
+   ========================================================================= */
+footer{background:var(--ink);color:var(--claro-escuro2);padding:72px 0 34px;font-size:14px}
+footer .cols{display:grid;grid-template-columns:1.35fr 1fr 1fr 1.1fr;gap:44px;margin-bottom:48px}
+footer h4{font-family:var(--serif);color:var(--areia);font-size:19px;font-weight:400;margin-bottom:16px}
+footer .flogo{font-family:var(--serif);font-size:26px;color:var(--areia);margin-bottom:14px;display:block}
+footer .flogo em{font-style:italic}
+footer p,footer a{color:var(--claro-escuro2);font-size:14px;line-height:1.75}
+footer a{transition:color 200ms var(--ease-curta)}
+footer a:hover{color:var(--areia)}
+footer ul{list-style:none}
+/* alvo de toque: 39px no desktop, 47px no celular, onde o dedo e o ponteiro */
+footer li a{display:inline-block;padding:8px 0}
+@media(max-width:920px){footer li a{padding:12px 0}}
+/* Grid de tres colunas, e nao flex com space-between: o item do meio precisa
+   ficar no centro da LINHA, e nao no meio do espaco que sobra entre dois
+   vizinhos de larguras diferentes. Com 1fr/auto/1fr o centro e real. */
+footer .base{border-top:1px solid rgba(252,241,221,.14);padding-top:26px;
+             display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+             gap:var(--e5);font-size:12.5px;color:var(--rodape-base)}
+footer .base > :nth-child(1){justify-self:start;text-align:left}
+footer .base > :nth-child(2){justify-self:center;text-align:center}
+footer .base > :nth-child(3){justify-self:end;text-align:right}
+footer .base a{font-size:12.5px;color:var(--rodape-base)}
+/* Os numeros de inscricao no CRBM sao links de conferencia. Sem sublinhado eles
+   nao se anunciam como clicaveis, porque o reset global zera text-decoration e
+   no rodape nao ha outra pista de cor. */
+footer .base a.reg-link{text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(252,241,221,.38)}
+footer .base a.reg-link:hover{text-decoration-color:currentColor}
+footer .base a:hover{color:var(--claro-escuro2)}
+
+/* =========================================================================
+   CASO CONDUZIDO
+   Entrou em 2026-08-17. Substitui a pagina de Casos que foi descartada.
+   Le como METODO, e nunca como prova: sem aspas, sem foto, sem moldura de
+   depoimento, sem numeracao, sem data e sem contador. O relatorio de UX e
+   explicito quanto a isso: a autoridade de HOME-09 vem inteira da palavra
+   "verificar", e caso narrado nao e verificavel. Se este componente parecer
+   prova, ele contamina o bloco vizinho.
+   A nota final e obrigatoria e NAO pode ficar discreta: e ela que separa
+   narrativa composta de depoimento fabricado.
+   ========================================================================= */
+.caso{border-top:1px solid var(--linha);padding-top:var(--e6);
+      margin-top:var(--e7);max-width:70ch;text-align:left}
+.caso h3{font-family:var(--serif);font-weight:400;
+         font-size:clamp(21px,2.2vw,27px);line-height:1.25;
+         color:var(--ink);margin-bottom:var(--e4)}
+.caso p{font-size:16.5px;line-height:1.75;color:var(--ink2);
+        margin-bottom:var(--e3)}
+/* o fecho e a unica linha em serifa: e a voz da clinica, e nao a narracao */
+.caso .caso-fecho{font-family:var(--serif);font-style:italic;
+                  font-size:clamp(18px,1.9vw,21px);line-height:1.45;
+                  color:var(--ink);border-left:2px solid var(--cafe);
+                  padding-left:var(--e4);margin:var(--e5) 0 var(--e5)}
+.caso .caso-nota{font-size:13px;line-height:1.65;color:var(--ink2)}
+/* na Home o bloco fica solto e centralizado no wrap; nos procedimentos ele
+   herda a coluna da grid2, e por isso nao leva margem automatica la */
+.caso--solto{margin-left:auto;margin-right:auto}
+
+/* =========================================================================
+   PAGINA DE PRIVACIDADE
+   Entrou em 2026-08-17. Pagina de leitura, e nao de venda: nenhum componente
+   novo alem de tipografia e ritmo. Medida de linha travada em 70ch, que e o
+   limite acima do qual o olho perde a linha seguinte em texto corrido longo.
+   ========================================================================= */
+.priv h2{font-family:var(--serif);font-weight:400;font-size:clamp(21px,2.1vw,26px);
+         line-height:1.25;margin:var(--e6) 0 var(--e3);color:var(--ink)}
+.priv h2:first-child{margin-top:0}
+.priv p{font-size:16.5px;line-height:1.75;color:var(--ink2);
+        margin-bottom:var(--e3);max-width:70ch}
+.priv b{color:var(--ink);font-weight:600}
+.priv a{color:var(--cafe);text-decoration:underline;text-underline-offset:3px}
+.priv-lista{list-style:none;margin:0 0 var(--e3);padding:0;max-width:70ch}
+.priv-lista li{position:relative;padding-left:20px;font-size:16.5px;line-height:1.75;
+               color:var(--ink2);margin-bottom:var(--e2)}
+/* traco em vez de bolinha: o site nao usa marcador redondo em lugar nenhum */
+.priv-lista li::before{content:"";position:absolute;left:0;top:14px;
+                       width:8px;height:1px;background:var(--cafe)}
+
+/* =========================================================================
+   ACOES FLUTUANTES
+   O circulo verde #1FAF38 do v2 era a unica cor saturada do site inteiro e
+   dizia varejo, nao boutique. O glifo do WhatsApp e reconhecivel sem a cor
+   de marca, pelo mesmo motivo que o icone do Instagram no rodape dispensa
+   o degrade. Entao ele vira tinta.
+   ========================================================================= */
+#waFloat{
+  position:fixed;right:20px;bottom:20px;z-index:80;
+  width:56px;height:56px;border-radius:50%;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 26px rgba(55,64,71,.354);
+  transition:transform 300ms var(--ease-saida),background-color 300ms var(--ease-curta);
+}
+/* o balao trocava de Petroleo para oliva no hover, um circulo de 56px mudando
+   de cor de uma vez, sem a revelacao que o botao retangular tem. Era o lugar
+   onde a troca de matiz mais aparecia. Agora e clareamento na mesma matiz. */
+#waFloat:hover{transform:translateY(-2px);background:var(--ink-hover)}
+#waFloat svg{width:28px;height:28px;fill:var(--areia)}
+
+/* barra fixa mobile. Entra depois que o hero sai da tela, e nao de cara,
+   o que leria como agressivo. Com ela presente o botao flutuante some:
+   dois CTAs flutuantes ao mesmo tempo leem como desespero. */
+.acao-fixa{display:none}
+@media(max-width:760px){
+  .acao-fixa{
+    position:fixed;left:0;right:0;bottom:0;z-index:80;
+    display:flex;gap:10px;align-items:center;
+    padding:11px 14px calc(11px + env(safe-area-inset-bottom));
+    background:rgba(254,247,227,.94);backdrop-filter:blur(12px);
+    border-top:1px solid var(--linha);
+    transform:translateY(101%);
+    transition:transform 420ms var(--ease-saida);
+  }
+  .acao-fixa.visivel{transform:translateY(0)}
+  /* O filete dourado vai por DENTRO nesta barra, e nao em volta: colada na
+     base da tela nao existe respiro externo para uma moldura. Sombra `inset`
+     nao e cortada pelo `overflow:hidden` do botao, ao contrario do que
+     aconteceria com um pseudo-elemento. */
+  .acao-fixa .btn{
+    box-shadow:inset 0 0 0 1px var(--branco), inset 0 0 0 2px var(--ouro)
+  }
+  /* o involucro vira o filho flexivel, e o botao ocupa ele inteiro */
+  .acao-fixa .ouro{flex:1}
+  .acao-fixa .ouro .btn{width:100%}
+  /* O ping aqui tem FIM, e essa e a unica diferenca em relacao ao ping da
+     pagina. A barra, uma vez visivel, nao se esconde mais: um anel pulsando
+     para sempre no rodape da tela durante a rolagem inteira e o oposto de
+     chamar atencao, vira mobilia. Sao tres pulsos e silencio depois. Como a
+     animacao so nasce quando o JS poe `.visivel`, os tres acontecem no
+     instante em que a barra entra, que e quando ha o que anunciar. */
+  .acao-fixa.visivel .ouro::before{
+    content:"";position:absolute;inset:-5px;pointer-events:none;
+    border:1px solid var(--ouro);border-radius:3px;
+    animation:ping 5s cubic-bezier(.16,1,.3,1) 3
+  }
+  .acao-fixa .btn,.acao-fixa .btn-linha{flex:1;min-height:50px;padding:13px 14px;font-size:14px}
+  .acao-fixa .btn-linha{flex:0 0 40%}
+  body{padding-bottom:76px}
+  #waFloat{display:none}
+}
+
+/* =========================================================================
+   MOVIMENTO
+   18px de deslocamento, nunca mais que 24, senao o olho le "elemento voando"
+   em vez de "elemento assentando". 820ms, o dobro do hover, porque revelacao
+   e evento de ambiente e nao resposta a um gesto. 70ms de escalonamento
+   entre irmaos, limitado a 6 para o atraso nunca passar de 420ms.
+   ========================================================================= */
+/* O conteudo NUNCA depende de JavaScript para ficar visivel. A regra so vale
+   quando o proprio script marcou <html class="js">, o que significa que ele
+   carregou e vai conseguir revelar de volta. Com JS desligado, com erro de
+   script ou com o observer perdendo um elemento, o site aparece inteiro.
+   Sem essa trava, um unico tropeco no script apaga metade da pagina. */
+.js .revela{
+  opacity:0;transform:translateY(18px);
+  transition:opacity var(--t-lento) var(--ease-saida),
+             transform var(--t-lento) var(--ease-saida);
+  transition-delay:calc(var(--i,0) * 70ms);
+}
+.js .revela.dentro{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important;
+  }
+  /* sem esta excecao, quem tem movimento reduzido ligado veria a pagina em
+     branco, porque a classe deixa opacity:0 e a transicao para de rodar */
+  .js .revela{opacity:1!important;transform:none!important}
+  .hero .midia img{animation:none!important}
+  video[autoplay]{display:none}
+  .poster-fallback{display:block!important}
+}
+
+/* =========================================================================
+   RESPONSIVO
+   O v2 tinha uma unica media query, em 920px. Faltava o intervalo de tablet
+   e faltava qualquer coisa abaixo de 480px.
+   ========================================================================= */
+@media(max-width:1080px){
+  .escuro .grid{grid-template-columns:.95fr 1.05fr;gap:40px}
+  .card.destaque .midia{flex:0 0 40%}
+  /* quatro certificados em fila ficam ilegiveis antes de 1080px: o documento
+     precisa de largura para o nome dela aparecer, que e o que a leitora procura */
+  .cert-grade--4{grid-template-columns:repeat(2,1fr)}
+  .cert-grade--3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:920px){
+  .menu{display:none}
+  .menu.aberto{
+    display:flex;position:absolute;top:var(--h-header);left:0;right:0;
+    background:var(--branco);flex-direction:column;padding:20px 24px 26px;
+    border-bottom:1px solid var(--linha);gap:6px;align-items:flex-start;
+  }
+  .menu.aberto a{padding:12px 0;font-size:15px;letter-spacing:.08em}
+  #burger{display:flex}
+  .nav .btn{display:none}
+  .hero .grid,.escuro .grid,.local .grid,.proc .grid2,
+  .aval-grid,.acesso-grid{grid-template-columns:1fr;gap:36px}
+  .hero .midia{max-width:460px}
+  .escuro .midia{max-width:420px}
+  .confianca ul{grid-template-columns:repeat(2,1fr);gap:24px 0}
+  .confianca li:nth-child(3){border-left:0}
+  .confianca li:nth-child(-n+2){padding-bottom:22px;border-bottom:1px solid var(--linha)}
+  .objecoes,.provas{grid-template-columns:1fr;gap:16px}
+  /* no celular o certificado ocupa a largura toda: e a unica forma de o
+     documento continuar sendo prova em vez de selo decorativo */
+  .cert-grade--3{grid-template-columns:1fr}
+  .cert-fecho--largo{grid-column:auto}
+  .cert-fecho{padding:24px 24px}
+  .provas{gap:26px}
+  .vip{flex-direction:column;align-items:flex-start;padding:32px 28px}
+  .card.destaque{grid-column:span 2;flex-direction:column}
+  .card.destaque .midia{aspect-ratio:3/4;flex:none;border-right:0;
+                        border-bottom:1px solid var(--linha);border-radius:2px 2px 0 0}
+  .card.destaque .corpo{padding:0}
+  .proc .midia--vertical{max-width:300px}
+  footer .cols{grid-template-columns:1fr 1fr;gap:36px}
+}
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr 1fr;gap:16px}
+  .card.destaque{grid-column:span 2}
+  .card h3{font-size:19px;margin:18px 16px 6px}
+  .card p{font-size:14px;margin:0 16px 16px}
+  .link-seta{margin:0 16px;font-size:12.5px}
+  .passos-linha{gap:0 var(--e5)}
+  .passos-linha::before{left:31px}
+  .passo .num{min-width:64px;font-size:44px;padding:8px 0 22px}
+  /* o mosaico tem as proprias regras responsivas mais abaixo, junto da
+     definicao dele. Havia aqui um par de !important que vencia aquelas
+     regras e colapsava a grade para uma coluna de 2px. */
+  footer .cols{grid-template-columns:1fr;gap:32px}
+  /* empilhado e centralizado: as tres pontas do desktop viram tres linhas */
+  footer .base{grid-template-columns:1fr;gap:var(--e3);text-align:center}
+  footer .base > :nth-child(1),
+  footer .base > :nth-child(2),
+  footer .base > :nth-child(3){justify-self:center;text-align:center}
+}
+@media(max-width:420px){
+  .wrap{padding:0 18px}
+  .hero h1{font-size:32px}
+  .cards{grid-template-columns:1fr}
+  .card.destaque{grid-column:span 1}
+  .titulo-sec{font-size:27px}
+  .manifesto p{font-size:26px}
+  .acao-fixa .btn-linha{flex:0 0 42%;padding:13px 10px;font-size:13px}
+}
+
+/* =========================================================================
+   MOSAICO DO ESPACO
+   A primeira versao dava proporcao fixa a cada peca dentro de uma grade de
+   linhas iguais. As duas geometrias brigavam: a foto alta media 615px, a
+   coluna do lado somava 804px, e sobrava um buraco de 315x394 no canto.
+   Ocupacao real: 72%.
+
+   Aqui a ordem se inverte. A GRADE define a geometria, com altura unica, e
+   as pecas se acomodam por object-fit. O corte deixa de ser acidente e passa
+   a ser decisao, e foto de ambiente aceita corte de um jeito que retrato nao
+   aceitaria. Resultado: 100% de ocupacao e todas as bordas alinhadas.
+
+   O video entra como peca da composicao, e nao solto embaixo dela, que era
+   o que o fazia flutuar no meio de 346px de sobra de cada lado.
+   ========================================================================= */
+.mosaico{
+  display:grid;
+  grid-template-columns:1.25fr 1.15fr .8fr .8fr;
+  grid-template-rows:1fr 1fr;
+  gap:16px;
+  height:clamp(440px,50vw,600px);
+  margin-top:var(--e7);
+}
+.mosaico>*{min-width:0;min-height:0}
+.mosaico .m-alta{grid-row:span 2}                 /* recepcao e video */
+.mosaico .m-larga{grid-column:span 2}             /* faixa de baixo, a direita */
+/* Especificidade importa aqui: `.video-quadro video` define height:auto mais
+   abaixo neste arquivo e empataria com `.mosaico video`, vencendo por ordem.
+   O seletor de tres classes garante que a celula da grade mande. */
+.mosaico img,.mosaico video,.mosaico .video-quadro video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:var(--pos,50% 45%);
+}
+/* O quadro de video perde a largura maxima e o aspecto proprio quando e peca
+   do mosaico: quem manda ali e a celula da grade. Precisa de duas classes no
+   seletor, senao `.video-quadro{max-width:380px}`, definido mais abaixo,
+   ganha por ordem e o video fica mais estreito que as fotos vizinhas. */
+.mosaico .video-quadro{max-width:none;aspect-ratio:auto;height:100%;margin:0}
+
+/* Abaixo de 920px o `span 2` das pecas altas tem que sair. Mantido, ele
+   consome duas das tres linhas e espreme as outras tres pecas para 10px de
+   altura, que foi o que aconteceu no primeiro teste. Em duas colunas cada
+   peca ocupa uma celula, e so a faixa de baixo atravessa. */
+@media(max-width:920px){
+  .mosaico{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1.25fr 1.25fr .9fr;
+    height:clamp(560px,112vw,820px);
+  }
+  .mosaico .m-alta{grid-row:auto}
+  .mosaico .m-larga{grid-column:span 2}
+}
+@media(max-width:560px){
+  .mosaico{gap:12px;height:clamp(500px,126vw,700px)}
+}
+
+/* video emoldurado no formato nativo, com botao de pausa proprio.
+   O v2 rodava o loop sem nenhum controle, o que fere o criterio 2.2.2 do
+   WCAG: movimento por mais de 5 segundos precisa de mecanismo de pausa. */
+.video-quadro{position:relative;max-width:380px;border:1px solid var(--linha);
+              border-radius:2px;overflow:hidden;background:var(--creme)}
+.video-quadro video{display:block;width:100%;height:auto}
+.pausa{
+  position:absolute;right:12px;bottom:12px;z-index:2;
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(252,241,221,.5);
+  background:rgba(55,64,71,.708);backdrop-filter:blur(6px);color:var(--areia);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:12px;line-height:1;transition:background-color 220ms var(--ease-curta)}
+.pausa:hover{background:rgba(55,64,71,1)}
+.poster-fallback{display:none}
+
+/* Link dentro de texto corrido, usado so nas duas chamadas de conferencia de
+   registro, no FAQ e na Sobre. Nao da para reaproveitar .link-luxo: ele e
+   inline-block com padding e uma area de toque de 44px em ::before, que dentro
+   de um paragrafo atropela as linhas de cima e de baixo. E o reset global
+   (a{text-decoration:none}) deixaria o link invisivel no meio da frase. Mesmo
+   tratamento visual que .priv a, que ja existia na pagina de Privacidade. */
+.link-conf{color:var(--cafe);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1px;text-decoration-color:rgba(100,103,72,.5);
+  transition:text-decoration-color 200ms var(--ease-curta)}
+.link-conf:hover{text-decoration-color:var(--cafe)}
+
+/* =========================================================================
+   BANNER DE CONSENTIMENTO DE COOKIES
+   Entrou em 2026-08-20. Tres decisoes de desenho que sao exigencia legal e
+   nao gosto, e que nao devem ser "melhoradas" depois:
+   1. Recusar custa o mesmo que aceitar. Os dois sao .btn-linha, mesmo tamanho,
+      lado a lado. Recusar em link cinza menor e o padrao escuro que a ANPD
+      trata como consentimento viciado.
+   2. Nao existe X, nao fecha por clique fora e nao fecha por rolagem. Fechar
+      sem escolher seria consentimento tacito, que a LGPD nao aceita.
+   3. z-index 95, acima do #waFloat e da .acao-fixa, que ficam em 80. E
+      enquanto o banner esta aberto os dois SOMEM, em vez de brigar por espaco
+      no rodape do celular: sao 3 elementos fixos disputando a mesma faixa.
+   ========================================================================= */
+.consent{
+  position:fixed;left:0;right:0;bottom:0;z-index:95;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--e5);
+  padding:12px 24px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(254,247,227,.97);backdrop-filter:blur(12px);
+  border-top:1px solid rgba(129,134,93,.42);
+  box-shadow:0 -10px 30px rgba(55,64,71,.10);
+}
+.consent[hidden]{display:none}
+/* O titulo virou LINHA, e nao paragrafo proprio: um paragrafo so para dizer
+   "Cookies" custava uma linha inteira de altura. Com o texto encurtado de 229
+   para cerca de 110 caracteres, o banner cabe em UMA linha no desktop. */
+.consent-t{font-family:var(--serif);font-size:15px;color:var(--ink)}
+.consent-txt p{font-size:13.5px;line-height:1.55;color:var(--ink2);max-width:92ch}
+.consent-acoes{display:flex;gap:var(--e3);flex-shrink:0}
+/* .btn-linha nasceu para <a>. Em <button> o navegador injeta font e fundo
+   proprios, entao os tres precisam ser zerados aqui. */
+.consent .btn-linha{font-family:var(--sans);background:transparent;cursor:pointer;
+  white-space:nowrap}
+body.consent-aberto #waFloat,
+body.consent-aberto .acao-fixa{display:none}
+@media(max-width:760px){
+  .consent{grid-template-columns:1fr;gap:10px;padding:12px 18px calc(12px + env(safe-area-inset-bottom))}
+  .consent-acoes{display:grid;grid-template-columns:1fr 1fr;gap:var(--e2)}
+  .consent .btn-linha{width:100%;justify-content:center;text-align:center}
+}
+/* botao que se comporta como link, no rodape, para reabrir a escolha */
+.link-cookie{font-family:var(--sans);background:none;border:0;padding:0;
+  cursor:pointer;font-size:12.5px;color:var(--rodape-base);
+  text-decoration:underline;text-underline-offset:3px;
+  transition:color 200ms var(--ease-curta)}
+.link-cookie:hover{color:var(--claro-escuro2)}
+
+
+/* ===== MENU COM SUBMENU POR AREA =====
+   Nomenclatura da decisao de 19/08/2026. O submenu sai da largura do <li> e
+   ocupa a faixa inteira, porque seis colunas nao cabem sob um item de 136px. */
+.tem-sub > a{display:inline-flex;align-items:center;gap:7px}
+.chev{width:6px;height:6px;border-right:1.5px solid currentColor;
+  border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);
+  transition:transform 220ms var(--ease-curta)}
+.tem-sub.aberto .chev{transform:rotate(-135deg) translate(-2px,-2px)}
+.submenu{
+  position:fixed;left:0;right:0;top:var(--h-header);
+  background:var(--branco);border-bottom:1px solid var(--linha);
+  box-shadow:0 18px 40px rgba(55,64,71,.10);
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity 220ms var(--ease-curta),transform 220ms var(--ease-saida),visibility 220ms;
+  z-index:49;
+}
+.tem-sub:hover .submenu,.tem-sub:focus-within .submenu,.tem-sub.aberto .submenu{
+  opacity:1;visibility:visible;transform:none}
+.sm-grade{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:28px;padding:32px 0 26px}
+.sm-titulo{font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--cafe);font-weight:500;margin-bottom:12px;padding-bottom:9px;
+  border-bottom:1px solid var(--linha)}
+.sm-area ul{list-style:none}
+.sm-area li a{display:block;padding:7px 0;font-size:14px;color:var(--ink2);
+  text-transform:none;letter-spacing:0;border:0;line-height:1.35;
+  transition:color 180ms var(--ease-curta)}
+.sm-area li a:hover{color:var(--ink)}
+.sm-rodape{grid-column:1/-1;border-top:1px solid var(--linha);padding-top:16px;margin-top:4px}
+.sm-todos{display:inline-flex;align-items:center;gap:10px;font-size:12px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--cafe);border:0;padding:6px 0}
+@media(max-width:920px){
+  /* No celular o menu ja e sanfona: o submenu vira mais um nivel dela, e nao
+     uma camada flutuante. */
+  .submenu{position:static;opacity:1;visibility:visible;transform:none;
+    box-shadow:none;border:0;display:none;background:transparent}
+  .tem-sub.aberto .submenu{display:block}
+  .sm-grade{grid-template-columns:1fr;gap:14px;padding:8px 0 12px}
+  .sm-titulo{margin-bottom:6px}
+  .sm-area li a{padding:9px 0;font-size:14.5px}
+  .sm-rodape{padding-top:12px}
+}
+
+
+/* ===== O QUE SOBROU DO GABARITO, 2026-08-20 =====
+   O layout A foi escolhido: a coluna lateral com foto e quadro de dados FICA,
+   e o arranjo dos sete blocos aprovados nao muda. A faixa larga foi montada,
+   comparada lado a lado e descartada: o quadro ja aparece na primeira dobra no
+   layout A, e o A mantem a foto colada no gancho.
+
+   Sobrou uma peca de CSS so, e ela independe do arranjo. */
+.encaminha{margin-top:14px;padding-left:16px;border-left:2px solid var(--caramelo);
+  font-size:15.5px;line-height:1.7;color:var(--ink2);max-width:64ch}
+
+/* A pagina do arquivo sempre aparece. Ver o comentario em caminhos(). */
+.pagina{display:block}
+.pendente{border-left:2px solid var(--caramelo);padding:4px 0 4px 18px;margin-bottom:22px}
+.pend-rot{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--cafe);margin-bottom:8px}
+.pendente p{font-size:15.5px;color:var(--ink2);line-height:1.65;max-width:56ch}
+.vizinhas{max-width:520px;border-top:1px solid var(--linha)}
+.viz{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:56px;
+  padding:14px 2px;border-bottom:1px solid var(--linha);font-family:var(--serif);
+  font-size:19px;font-weight:400;transition:color 200ms var(--ease-curta)}
+.viz:hover{color:var(--cafe)}
+.viz:hover .seta{width:24px}
+
+.al{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:4px 18px;padding:14px 0;border-bottom:1px solid rgba(252,241,221,.18);
+  align-items:center}
+.al b{font-family:var(--serif);font-size:clamp(17px,1.7vw,21px);font-weight:400;
+  color:var(--areia);line-height:1.25}
+.al i{grid-column:1/-1;font-style:normal;font-size:13.5px;color:var(--claro-escuro2);line-height:1.5}
+.al:hover b{color:#fff}
+.hub-fim{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+.hub-fim p{font-size:16px;color:var(--ink2);max-width:52ch;line-height:1.65}
+@media(max-width:600px){.hub-fim{flex-direction:column;align-items:flex-start}}
+
+/* ===== CONCEITO 2: A CORTINA =====
+   <dialog> nativo com showModal(): entrega armadilha de foco, Esc e inerte
+   atras, de graca. Escrever isso a mao e onde esse padrao costuma quebrar
+   acessibilidade. */
+.blocos{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.bl{position:relative;min-height:38vh;border:0;padding:0;cursor:pointer;overflow:hidden;
+  background:var(--ink);text-align:left;display:block}
+.bl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(.35) brightness(.62);transition:transform 620ms var(--ease-saida),filter 420ms}
+.bl:hover img{transform:scale(1.05);filter:grayscale(0) brightness(.7)}
+.bl::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(55,64,71,.88) 0%,rgba(55,64,71,.30) 60%,transparent 100%)}
+.bl-txt{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px;display:block}
+.bl-txt b{display:block;font-family:var(--serif);font-size:clamp(21px,2.2vw,28px);
+  font-weight:400;color:var(--areia);margin-bottom:4px}
+.bl-txt i{display:block;font-style:normal;font-size:13px;color:var(--claro-escuro2);margin-bottom:12px}
+.bl--sem-foto{background:var(--ink-hover);display:flex;align-items:flex-end;min-height:38vh}
+.bl--sem-foto::after{background:none}
+.bl--sem-foto .bl-txt{position:relative}
+.bl-cta{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--areia);
+  display:inline-flex;align-items:center;gap:8px}
+.cortina{width:100%;max-width:100%;height:100%;max-height:100%;border:0;padding:0;
+  background:var(--ink);color:var(--areia);overflow-y:auto}
+.cortina::backdrop{background:rgba(30,35,40,.7)}
+.cortina[open]{animation:cortEntra 380ms var(--ease-saida) both}
+@keyframes cortEntra{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.cor-topo{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;
+  align-items:center;padding:16px 24px;background:var(--ink);
+  border-bottom:1px solid rgba(252,241,221,.14)}
+.cor-topo button{background:none;border:0;cursor:pointer;color:var(--claro-escuro2);
+  font-family:var(--sans);font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  min-height:44px;padding:0 4px}
+.cor-topo button:hover{color:var(--areia)}
+.cor-x{font-size:17px!important;letter-spacing:0!important}
+.cortina .cor-grade:not(:has(.cor-foto)){grid-template-columns:minmax(0,1fr)}
+.cor-grade{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);
+  gap:clamp(24px,4vw,56px);padding-top:36px;padding-bottom:40px;align-items:start}
+.cor-foto{position:sticky;top:88px;aspect-ratio:2/3;overflow:hidden}
+.cor-foto img{width:100%;height:100%;object-fit:cover}
+.cor-tit{font-family:var(--serif);font-size:clamp(28px,3.4vw,42px);margin-bottom:8px}
+.cor-desc{font-size:15px;color:var(--claro-escuro2);max-width:52ch;margin-bottom:20px;line-height:1.6}
+.cor-chips{position:sticky;bottom:0;background:var(--ink);
+  border-top:1px solid rgba(252,241,221,.14);padding:12px 0}
+.cor-chips ul{display:flex;gap:8px;overflow-x:auto;padding:0 24px;list-style:none}
+.cor-chips button{white-space:nowrap;background:none;cursor:pointer;
+  border:1px solid rgba(252,241,221,.28);color:var(--claro-escuro2);
+  padding:10px 16px;font-size:12px;font-family:var(--sans);min-height:44px}
+.cor-chips button.ativo{border-color:var(--caramelo);color:var(--areia)}
+@media(max-width:820px){
+  .bl{min-height:24vh}
+  .cor-grade{grid-template-columns:1fr;padding-top:20px}
+  .cor-foto{position:relative;top:auto;aspect-ratio:16/9}
+}
