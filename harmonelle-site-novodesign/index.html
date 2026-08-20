@@ -935,6 +935,12 @@ footer .base > :nth-child(1){justify-self:start;text-align:left}
 footer .base > :nth-child(2){justify-self:center;text-align:center}
 footer .base > :nth-child(3){justify-self:end;text-align:right}
 footer .base a{font-size:12.5px;color:var(--rodape-base)}
+/* Os numeros de inscricao no CRBM sao links de conferencia. Sem sublinhado eles
+   nao se anunciam como clicaveis, porque o reset global zera text-decoration e
+   no rodape nao ha outra pista de cor. */
+footer .base a.reg-link{text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:rgba(252,241,221,.38)}
+footer .base a.reg-link:hover{text-decoration-color:currentColor}
 footer .base a:hover{color:var(--claro-escuro2)}
 
 /* =========================================================================
@@ -2461,11 +2467,18 @@ body.consent-aberto .acao-fixa{display:none}
          O numero do CRBM-5 da PJ chegou em 2026-08-20, pela consulta publica do
          conselho, e entrou depois do CNPJ: e 2025-2767. O art. 9, a da Resolucao
          CFBM 330/2020 exige os DOIS numeros de inscricao, o da profissional e o
-         da pessoa juridica, em qualquer publicidade. Nao apagar nenhum dos dois. -->
+         da pessoa juridica, em qualquer publicidade. Nao apagar nenhum dos dois.
+
+         Os DOIS numeros sao links para a consulta publica do CRBM-5, a pedido do
+         Marcos em 2026-08-20. O numero e o proprio texto do link de proposito: a
+         consulta e POST com Cloudflare na frente, entao nao existe link direto
+         para a ficha, e a pessoa cai num formulario vazio. Vendo o numero no
+         link, ela leva o numero para o campo. Buscar pelo NOME nao funciona: no
+         conselho ela e EMANUELLE FRANCIELLE MAIA DA SILVA, e nao "Manu Maia". -->
     <div class="base">
-      <span data-copy="FOOTER-PJ">EMED Clínica Avançada e Instituto LTDA · CNPJ 61.548.761/0001-77 · CRBM-5 nº 2025-2767</span>
+      <span data-copy="FOOTER-PJ">EMED Clínica Avançada e Instituto LTDA · CNPJ 61.548.761/0001-77 · <a class="reg-link" href="https://crbm-05.implanta.net.br/servicosonline/Publico/ConsultaInscritos/" target="_blank" rel="noopener" aria-label="Conferir a inscrição 2025-2767 da clínica na consulta pública do CRBM-5">CRBM-5 nº 2025-2767</a></span>
       <span><a href="#privacidade" data-page-link="privacidade" data-copy="FOOTER-LEGAL">Política de Privacidade</a> · <button type="button" class="link-cookie" id="abrirCookies" data-copy="FOOTER-COOKIES">Preferências de cookies</button></span>
-      <span data-copy="FOOTER-PROF">Dra. Manu Maia · Biomédica Esteta · CRBM-5 015437</span>
+      <span data-copy="FOOTER-PROF">Dra. Manu Maia · Biomédica Esteta · <a class="reg-link" href="https://crbm-05.implanta.net.br/servicosonline/Publico/ConsultaInscritos/" target="_blank" rel="noopener" aria-label="Conferir o registro 015437 da Dra. Manu Maia na consulta pública do CRBM-5">CRBM-5 015437</a></span>
     </div>
   </div>
 </footer>
