@@ -1261,14 +1261,17 @@ footer .base a:hover{color:var(--claro-escuro2)}
 .consent{
   position:fixed;left:0;right:0;bottom:0;z-index:95;
   display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--e5);
-  padding:18px 24px calc(18px + env(safe-area-inset-bottom));
+  padding:12px 24px calc(12px + env(safe-area-inset-bottom));
   background:rgba(254,247,227,.97);backdrop-filter:blur(12px);
   border-top:1px solid rgba(129,134,93,.42);
   box-shadow:0 -10px 30px rgba(55,64,71,.10);
 }
 .consent[hidden]{display:none}
-.consent-t{font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:4px}
-.consent-txt p{font-size:13.5px;line-height:1.6;color:var(--ink2);max-width:78ch}
+/* O titulo virou LINHA, e nao paragrafo proprio: um paragrafo so para dizer
+   "Cookies" custava uma linha inteira de altura. Com o texto encurtado de 229
+   para cerca de 110 caracteres, o banner cabe em UMA linha no desktop. */
+.consent-t{font-family:var(--serif);font-size:15px;color:var(--ink)}
+.consent-txt p{font-size:13.5px;line-height:1.55;color:var(--ink2);max-width:92ch}
 .consent-acoes{display:flex;gap:var(--e3);flex-shrink:0}
 /* .btn-linha nasceu para <a>. Em <button> o navegador injeta font e fundo
    proprios, entao os tres precisam ser zerados aqui. */
@@ -1277,7 +1280,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
 body.consent-aberto #waFloat,
 body.consent-aberto .acao-fixa{display:none}
 @media(max-width:760px){
-  .consent{grid-template-columns:1fr;gap:var(--e4);padding:16px 18px calc(16px + env(safe-area-inset-bottom))}
+  .consent{grid-template-columns:1fr;gap:10px;padding:12px 18px calc(12px + env(safe-area-inset-bottom))}
   .consent-acoes{display:grid;grid-template-columns:1fr 1fr;gap:var(--e2)}
   .consent .btn-linha{width:100%;justify-content:center;text-align:center}
 }
@@ -2495,14 +2498,13 @@ body.consent-aberto .acao-fixa{display:none}
      foco e nao impede ler a pagina. Cookie-wall, que so libera o site depois
      do aceite, vicia o consentimento porque tira a liberdade da escolha. -->
 <div class="consent" id="consent" role="dialog" aria-modal="false"
-     aria-labelledby="consentT" aria-describedby="consentD" hidden>
+     aria-label="Aviso de cookies" hidden>
   <div class="consent-txt">
-    <p class="consent-t" id="consentT" data-copy="COOKIE-T">Cookies neste site</p>
-    <p id="consentD" data-copy="COOKIE-D">Os essenciais fazem a página funcionar e não dá para desligar. Os de medição mostram como as pessoas navegam, e só entram se você deixar. Recusar não limita nada, e você pode mudar depois, no rodapé. <a class="link-conf" href="#privacidade" data-page-link="privacidade">Ler a Política de Privacidade</a></p>
+    <p data-copy="COOKIE-D"><b class="consent-t">Cookies.</b> Os essenciais fazem a página funcionar. Os de medição só entram se você deixar. <a class="link-conf" href="#privacidade" data-page-link="privacidade">Ler a Política de Privacidade</a></p>
   </div>
   <div class="consent-acoes">
-    <button type="button" class="btn-linha" id="consentNao" data-copy="COOKIE-NAO">Só os essenciais</button>
-    <button type="button" class="btn-linha" id="consentSim" data-copy="COOKIE-SIM">Aceitar medição</button>
+    <button type="button" class="btn-linha" id="consentNao" data-copy="COOKIE-NAO">Recusar</button>
+    <button type="button" class="btn-linha" id="consentSim" data-copy="COOKIE-SIM">Aceitar cookies</button>
   </div>
 </div>
 
