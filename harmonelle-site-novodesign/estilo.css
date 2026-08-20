@@ -1215,6 +1215,19 @@ body.consent-aberto .acao-fixa{display:none}
 .encaminha{margin-top:14px;padding-left:16px;border-left:2px solid var(--caramelo);
   font-size:15.5px;line-height:1.7;color:var(--ink2);max-width:64ch}
 
+/* ===== TAREFA 21: os cartoes de AREA na Home =====
+   Trocaram os sete cartoes de procedimento, que foram escolhidos quando eram
+   sete no total. Com dezesseis, sete escolhidos por acaso nao servem e
+   dezesseis viram catalogo. As seis areas resolvem os dois, e deixam Home, hub
+   e menu contando a mesma historia. */
+.areas-home{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.area-conta{display:block;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--cafe);margin:10px 0 14px}
+/* O cartao da Intima NAO tem foto, e isso e o desenho e nao economia: numa
+   grade, o unico sem imagem chama atencao E comunica discricao ao mesmo tempo.
+   Mesma decisao ja tomada no hub. Nao "consertar" pondo uma foto. */
+.area-card--sem-foto{background:var(--creme);display:flex;align-items:flex-end;min-height:300px}
+
 /* A pagina do arquivo sempre aparece. Ver o comentario em caminhos(). */
 .pagina{display:block}
 .pendente{border-left:2px solid var(--caramelo);padding:4px 0 4px 18px;margin-bottom:22px}
