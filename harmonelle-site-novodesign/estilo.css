@@ -1228,6 +1228,51 @@ body.consent-aberto .acao-fixa{display:none}
    Mesma decisao ja tomada no hub. Nao "consertar" pondo uma foto. */
 .area-card--sem-foto{background:var(--creme);display:flex;align-items:flex-end;min-height:300px}
 
+/* ===== TAREFA 18: o balao do WhatsApp =====
+   Sao QUATRO elementos fixos disputando o rodape do celular: o balao, o
+   #waFloat, a .acao-fixa e o banner de cookies. A ordem de empilhamento e
+   deliberada: cookies em 95 manda em todos, o balao em 79 fica ABAIXO do
+   #waFloat e da .acao-fixa, que estao em 80, para nunca cobrir o botao que
+   ele proprio esta convidando a apertar. */
+.balao{
+  position:fixed;right:20px;bottom:88px;z-index:79;width:min(320px,calc(100vw - 40px));
+  background:var(--branco);border:1px solid var(--linha);
+  box-shadow:0 14px 40px rgba(55,64,71,.16);
+  padding:16px 18px 14px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity 320ms var(--ease-curta),transform 320ms var(--ease-saida);
+}
+.balao.aberto{opacity:1;transform:none}
+.balao[hidden]{display:none}
+/* o rabinho que aponta para o botao */
+.balao::after{content:"";position:absolute;right:26px;bottom:-7px;width:12px;height:12px;
+  background:var(--branco);border-right:1px solid var(--linha);border-bottom:1px solid var(--linha);
+  transform:rotate(45deg)}
+.balao-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;
+  cursor:pointer;color:var(--ink2);font-size:13px;line-height:1}
+.balao-x:hover{color:var(--ink)}
+.balao-topo{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+/* Monograma, e nao rosto: quem responde e a Gabriella, e foto dela nao existe.
+   Ver o comentario no _rodape.html. */
+.balao-avatar{position:relative;flex-shrink:0;width:42px;height:42px;border-radius:50%;
+  background:var(--ink);color:var(--areia);font-family:var(--serif);font-size:20px;
+  display:flex;align-items:center;justify-content:center}
+.balao-online{position:absolute;right:0;bottom:1px;width:11px;height:11px;border-radius:50%;
+  background:#3FBF6B;border:2px solid var(--branco)}
+.balao-quem{display:flex;flex-direction:column;line-height:1.25}
+.balao-quem b{font-size:14.5px;font-weight:500;color:var(--ink)}
+.balao-quem i{font-style:normal;font-size:11.5px;color:var(--ink2)}
+.balao-msg{font-size:14px;line-height:1.55;color:var(--ink2);margin-bottom:12px}
+.balao-cta{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--cafe);min-height:44px}
+@media(max-width:760px){
+  .balao{right:14px;left:14px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}
+  .balao::after{display:none}
+}
+/* enquanto a pessoa nao decidiu sobre cookies, o balao nao aparece: dois avisos
+   ao mesmo tempo e ruido, e o de cookies tem precedencia legal */
+body.consent-aberto .balao{display:none}
+
 /* A pagina do arquivo sempre aparece. Ver o comentario em caminhos(). */
 .pagina{display:block}
 .pendente{border-left:2px solid var(--caramelo);padding:4px 0 4px 18px;margin-bottom:22px}
