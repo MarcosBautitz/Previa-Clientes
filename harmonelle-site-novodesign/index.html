@@ -108,6 +108,22 @@
   ]
 }
 </script>
+<!-- Consent Mode v2, tudo NEGADO por padrao.
+     Isto tem de rodar antes de qualquer tag de medicao, e por isso esta no
+     <head> e nao no fim do body. Hoje o site NAO tem GA4 nem Pixel: isto e o
+     trilho pronto para quando entrarem, para que ja nascam obedecendo a
+     escolha da visitante, em vez de disparar primeiro e perguntar depois.
+     wait_for_update:500 segura a tag por meio segundo, o tempo de o banner
+     ler o localStorage e mandar o update de quem ja respondeu antes. -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("consent","default",{
+  ad_storage:"denied", ad_user_data:"denied", ad_personalization:"denied",
+  analytics_storage:"denied", functionality_storage:"granted",
+  security_storage:"granted", wait_for_update:500
+});
+</script>
 
 <style>
 /* =========================================================================
@@ -1220,6 +1236,49 @@ footer .base a:hover{color:var(--claro-escuro2)}
   transition:text-decoration-color 200ms var(--ease-curta)}
 .link-conf:hover{text-decoration-color:var(--cafe)}
 
+/* =========================================================================
+   BANNER DE CONSENTIMENTO DE COOKIES
+   Entrou em 2026-08-20. Tres decisoes de desenho que sao exigencia legal e
+   nao gosto, e que nao devem ser "melhoradas" depois:
+   1. Recusar custa o mesmo que aceitar. Os dois sao .btn-linha, mesmo tamanho,
+      lado a lado. Recusar em link cinza menor e o padrao escuro que a ANPD
+      trata como consentimento viciado.
+   2. Nao existe X, nao fecha por clique fora e nao fecha por rolagem. Fechar
+      sem escolher seria consentimento tacito, que a LGPD nao aceita.
+   3. z-index 95, acima do #waFloat e da .acao-fixa, que ficam em 80. E
+      enquanto o banner esta aberto os dois SOMEM, em vez de brigar por espaco
+      no rodape do celular: sao 3 elementos fixos disputando a mesma faixa.
+   ========================================================================= */
+.consent{
+  position:fixed;left:0;right:0;bottom:0;z-index:95;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--e5);
+  padding:18px 24px calc(18px + env(safe-area-inset-bottom));
+  background:rgba(254,247,227,.97);backdrop-filter:blur(12px);
+  border-top:1px solid rgba(129,134,93,.42);
+  box-shadow:0 -10px 30px rgba(55,64,71,.10);
+}
+.consent[hidden]{display:none}
+.consent-t{font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:4px}
+.consent-txt p{font-size:13.5px;line-height:1.6;color:var(--ink2);max-width:78ch}
+.consent-acoes{display:flex;gap:var(--e3);flex-shrink:0}
+/* .btn-linha nasceu para <a>. Em <button> o navegador injeta font e fundo
+   proprios, entao os tres precisam ser zerados aqui. */
+.consent .btn-linha{font-family:var(--sans);background:transparent;cursor:pointer;
+  white-space:nowrap}
+body.consent-aberto #waFloat,
+body.consent-aberto .acao-fixa{display:none}
+@media(max-width:760px){
+  .consent{grid-template-columns:1fr;gap:var(--e4);padding:16px 18px calc(16px + env(safe-area-inset-bottom))}
+  .consent-acoes{display:grid;grid-template-columns:1fr 1fr;gap:var(--e2)}
+  .consent .btn-linha{width:100%;justify-content:center;text-align:center}
+}
+/* botao que se comporta como link, no rodape, para reabrir a escolha */
+.link-cookie{font-family:var(--sans);background:none;border:0;padding:0;
+  cursor:pointer;font-size:12.5px;color:var(--rodape-base);
+  text-decoration:underline;text-underline-offset:3px;
+  transition:color 200ms var(--ease-curta)}
+.link-cookie:hover{color:var(--claro-escuro2)}
+
 </style>
 </head>
 <body>
@@ -2292,7 +2351,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
       <p data-copy="PRIV-02-P2">Esta política vale para o site, para o WhatsApp, para o e-mail, para o Instagram e para o atendimento presencial na clínica.</p>
 
       <h2 data-copy="PRIV-03-T">2. Com quem falar sobre privacidade</h2>
-      <p data-copy="PRIV-03-P">Encarregado pelo tratamento de dados: <b>[nome do encarregado]</b>. Você pode escrever para <a href="mailto:oi@harmonelle.com.br">oi@harmonelle.com.br</a> ou chamar no WhatsApp (47) 99754-6362. Toda solicitação sobre os seus dados chega por aqui.</p>
+      <p data-copy="PRIV-03-P">Escreva para <a href="mailto:oi@harmonelle.com.br">oi@harmonelle.com.br</a> ou chame no WhatsApp (47) 99754-6362. Toda solicitação sobre os seus dados chega por aqui, e é a clínica quem responde. A Harmonelle é uma empresa de pequeno porte e, por isso, o art. 11 da Resolução CD/ANPD nº 2/2022 dispensa a indicação de um encarregado de dados, desde que exista um canal de atendimento como este. Se a clínica designar um encarregado, o nome dele passa a constar aqui.</p>
 
       <h2 data-copy="PRIV-04-T">3. Que dados coletamos</h2>
       <p data-copy="PRIV-04-P1"><b>Identificação e contato.</b> Nome, data de nascimento, CPF, endereço, telefone, WhatsApp e e-mail.</p>
@@ -2323,7 +2382,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
       <p data-copy="PRIV-08-P">Alguns serviços que usamos, como armazenamento em nuvem, e-mail e WhatsApp, processam dados em servidores no exterior. Isso segue o art. 33 da LGPD e as salvaguardas contratuais dos fornecedores. Se preferir não usar esses canais, fale conosco por telefone ou pessoalmente.</p>
 
       <h2 data-copy="PRIV-09-T">8. Por quanto tempo guardamos</h2>
-      <p data-copy="PRIV-09-P1">Registro de atendimento e dados de saúde: <b>[prazo a definir]</b>. Documentos fiscais: pelo prazo que a legislação tributária exige. Imagens autorizadas para divulgação: enquanto durar a autorização. Dados de contato para comunicações: até você retirar o consentimento.</p>
+      <p data-copy="PRIV-09-P1">Registro de atendimento e dados de saúde: <b>no mínimo 20 anos, contados do último registro</b>, que é o prazo do art. 6º da Lei nº 13.787/2018. Documentos fiscais: pelo prazo que a legislação tributária exige. Imagens autorizadas para divulgação: enquanto durar a autorização. Dados de contato para comunicações: até você retirar o consentimento.</p>
       <p data-copy="PRIV-09-P2">Vencido o prazo, os dados são eliminados ou anonimizados, salvo quando a lei permitir a conservação, como para cumprir obrigação legal ou defender direitos.</p>
 
       <h2 data-copy="PRIV-10-T">9. Como protegemos</h2>
@@ -2334,7 +2393,7 @@ footer .base a:hover{color:var(--claro-escuro2)}
       <p data-copy="PRIV-11-P2">É só escrever para o canal do item 2. Podemos pedir uma confirmação de identidade antes, por segurança. Se algum pedido não puder ser atendido, por existir obrigação legal de guarda ou necessidade de defesa de direitos, explicamos o motivo. Você também pode procurar diretamente a ANPD.</p>
 
       <h2 data-copy="PRIV-12-T">11. Cookies</h2>
-      <p data-copy="PRIV-12-P">O site usa cookies essenciais, que fazem a página funcionar, e, com o seu consentimento, cookies de medição, que mostram como as pessoas navegam e ajudam a melhorar o site. Recusar os não essenciais não impede o uso do site, e você pode mudar a escolha quando quiser, no site ou no seu navegador.</p>
+      <p data-copy="PRIV-12-P">Na primeira visita, o site pergunta. Os cookies essenciais fazem a página funcionar e não podem ser desligados. Os de medição, que mostram como as pessoas navegam, só passam a funcionar se você aceitar, e nada de medição roda antes disso. Recusar não limita nada aqui dentro. A sua escolha fica guardada no seu navegador e pode ser mudada quando você quiser, em <b>Preferências de cookies</b>, no rodapé de qualquer página.</p>
 
       <h2 data-copy="PRIV-13-T">12. Menores de 18 anos</h2>
       <p data-copy="PRIV-13-P">Atendimento a menor de idade, quando cabível, depende de autorização e acompanhamento de pai, mãe ou responsável legal, e o uso dos dados observa o art. 14 da LGPD, sempre no melhor interesse do menor.</p>
@@ -2405,13 +2464,31 @@ footer .base a:hover{color:var(--claro-escuro2)}
          da pessoa juridica, em qualquer publicidade. Nao apagar nenhum dos dois. -->
     <div class="base">
       <span data-copy="FOOTER-PJ">EMED Clínica Avançada e Instituto LTDA · CNPJ 61.548.761/0001-77 · CRBM-5 nº 2025-2767</span>
-      <span><a href="#privacidade" data-page-link="privacidade" data-copy="FOOTER-LEGAL">Política de Privacidade</a></span>
+      <span><a href="#privacidade" data-page-link="privacidade" data-copy="FOOTER-LEGAL">Política de Privacidade</a> · <button type="button" class="link-cookie" id="abrirCookies" data-copy="FOOTER-COOKIES">Preferências de cookies</button></span>
       <span data-copy="FOOTER-PROF">Dra. Manu Maia · Biomédica Esteta · CRBM-5 015437</span>
     </div>
   </div>
 </footer>
 
 <a id="waFloat" data-wa="float" href="https://wa.me/5547997546362?text=Oi!%20Vim%20pelo%20site%20e%20queria%20tirar%20uma%20d%C3%BAvida%20antes%20de%20agendar." target="_blank" rel="noopener" aria-label="Conversar no WhatsApp"><svg><use href="#i-wa"/></svg></a>
+
+<!-- Banner de consentimento. Ler o bloco de comentario de .consent no
+     v3.parte3.css antes de mexer no desenho: as tres regras de la sao
+     exigencia da LGPD, e nao preferencia visual.
+     aria-modal e "false" de proposito: o banner NAO e modal, nao prende o
+     foco e nao impede ler a pagina. Cookie-wall, que so libera o site depois
+     do aceite, vicia o consentimento porque tira a liberdade da escolha. -->
+<div class="consent" id="consent" role="dialog" aria-modal="false"
+     aria-labelledby="consentT" aria-describedby="consentD" hidden>
+  <div class="consent-txt">
+    <p class="consent-t" id="consentT" data-copy="COOKIE-T">Cookies neste site</p>
+    <p id="consentD" data-copy="COOKIE-D">Os essenciais fazem a página funcionar e não dá para desligar. Os de medição mostram como as pessoas navegam, e só entram se você deixar. Recusar não limita nada, e você pode mudar depois, no rodapé. <a class="link-conf" href="#privacidade" data-page-link="privacidade">Ler a Política de Privacidade</a></p>
+  </div>
+  <div class="consent-acoes">
+    <button type="button" class="btn-linha" id="consentNao" data-copy="COOKIE-NAO">Só os essenciais</button>
+    <button type="button" class="btn-linha" id="consentSim" data-copy="COOKIE-SIM">Aceitar medição</button>
+  </div>
+</div>
 
 <!-- barra fixa mobile: substitui o balao flutuante abaixo de 760px -->
 <div class="acao-fixa" id="acaoFixa">
@@ -2720,6 +2797,79 @@ footer .base a:hover{color:var(--claro-escuro2)}
   else { observarRevela(document.getElementById("page-home")); }
   history.replaceState({pagina: h || "home"}, "", location.hash || "#home");
   onScroll();
+})();
+</script>
+<script>
+/* ===================== CONSENTIMENTO DE COOKIES =====================
+   O padrao negado ja foi declarado no <head>, em Consent Mode v2. Este
+   bloco so faz tres coisas: pergunta a quem ainda nao respondeu, guarda a
+   resposta, e manda o "update" para as tags de medicao.
+
+   Por que a escolha vai para localStorage e nao para cookie: guardar em
+   cookie a decisao de nao querer cookies e contraditorio, e ainda mandaria
+   o dado para o servidor a cada requisicao, sem necessidade nenhuma.
+
+   O registro guarda VERSAO e a data ISO. A data e a prova de quando a
+   pessoa consentiu. A versao e o botao de reperguntar: mudou o texto do
+   banner ou entrou uma finalidade nova de medicao, sobe VERSAO para 2 e
+   todo mundo e perguntado outra vez, porque consentimento dado para um
+   texto nao vale para outro.
+
+   Quando entrar GA4 ou Pixel do Meta, NAO e preciso mexer aqui. O gtag ja
+   recebe o update sozinho, e o Pixel pode escutar o evento "consentimento"
+   disparado no document, ou ler window.consentimentoMedicao. =========== */
+(function(){
+  var CHAVE = "harmonelle:cookies";
+  var VERSAO = 1;
+  var caixa = document.getElementById("consent");
+  if(!caixa){ return; }
+
+  /* try/catch em tudo que toca localStorage: em aba anonima de alguns
+     navegadores o acesso levanta excecao, e sem isso o banner sumiria da
+     pagina inteira por erro de script. Sem storage, pergunta toda visita,
+     que e o comportamento seguro. */
+  function ler(){
+    try{
+      var bruto = localStorage.getItem(CHAVE);
+      if(!bruto){ return null; }
+      var o = JSON.parse(bruto);
+      return (o && o.versao === VERSAO) ? o : null;
+    }catch(e){ return null; }
+  }
+
+  function gravar(medicao){
+    try{
+      localStorage.setItem(CHAVE, JSON.stringify({
+        versao: VERSAO, medicao: !!medicao, quando: new Date().toISOString()
+      }));
+    }catch(e){}
+  }
+
+  function aplicar(medicao){
+    var estado = medicao ? "granted" : "denied";
+    if(typeof window.gtag === "function"){
+      window.gtag("consent","update",{
+        ad_storage: estado, ad_user_data: estado,
+        ad_personalization: estado, analytics_storage: estado
+      });
+    }
+    window.consentimentoMedicao = !!medicao;
+    document.dispatchEvent(new CustomEvent("consentimento", {detail:{medicao: !!medicao}}));
+  }
+
+  function abrir(){ caixa.hidden = false; document.body.classList.add("consent-aberto"); }
+  function fechar(){ caixa.hidden = true; document.body.classList.remove("consent-aberto"); }
+  function decidir(medicao){ gravar(medicao); aplicar(medicao); fechar(); }
+
+  document.getElementById("consentSim").addEventListener("click", function(){ decidir(true); });
+  document.getElementById("consentNao").addEventListener("click", function(){ decidir(false); });
+
+  var reabrir = document.getElementById("abrirCookies");
+  if(reabrir){ reabrir.addEventListener("click", abrir); }
+  window.abrirPreferenciasCookies = abrir;
+
+  var ja = ler();
+  if(ja){ aplicar(ja.medicao); } else { abrir(); }
 })();
 </script>
 </body>
