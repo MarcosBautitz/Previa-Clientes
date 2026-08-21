@@ -1375,3 +1375,64 @@ body.consent-aberto .balao{display:none}
   .cor-grade{grid-template-columns:1fr;padding-top:20px}
   .cor-foto{position:relative;top:auto;aspect-ratio:16/9}
 }
+
+/* =========================================================================
+   CARROSSEL DAS PAGINAS DE PROCEDIMENTO, ideia 3: a espiada do proximo
+   Escolhido pelo Marcos em 20/08/2026. So nas 16 de procedimento.
+   ========================================================================= */
+.c3{position:relative}
+.c3-janela{overflow:hidden}
+.c3-trilho{display:flex;gap:12px;
+  transition:transform var(--t-lento) var(--ease-saida);will-change:transform}
+.c3-trilho.arrastando{transition:none}
+/* A caixa da foto e a mesma que as tres ideias usaram, para a comparacao com a
+   cliente nao ficar contaminada por tamanho: 413x516 na coluna de 483px. A
+   sobra de 70px vira a espiada do proximo. */
+.c3-item{flex:0 0 calc(100% - 70px);aspect-ratio:4/5;overflow:hidden;
+  background:var(--creme);position:relative;cursor:pointer}
+/* a foto em exibicao nao e alvo de clique, so as que espiam. Sem esta linha o
+   cursor promete uma acao que nao existe em cima da foto que ja esta aberta. */
+.c3-item.on{cursor:default}
+.c3-item img{width:100%;height:100%;object-fit:cover;
+  transform:scale(1.06);transition:transform var(--t-foto) var(--ease-saida),
+  filter 620ms var(--ease-curta);filter:grayscale(.35) brightness(.86)}
+/* O item ATIVO ganha cor cheia e volta ao tamanho: quem espia fica apagado, e
+   e isso que faz a espiada parecer intencao e nao sobra de layout.
+   ARMADILHA: `filter:none` so devolve a cor que o ARQUIVO tem. Cinco fotos do
+   acervo sao preto e branco na origem, com saturacao 0,000, e nenhuma regra de
+   CSS as traz de volta. Por isso a lista FOTOS la em cima nao usa nenhuma
+   delas. Ver o relatorio de 20/08/2026. */
+.c3-item.on img{transform:scale(1);filter:none}
+.c3-item::after{content:"";position:absolute;inset:0;background:rgba(55,64,71,.16);
+  opacity:1;transition:opacity 620ms var(--ease-curta)}
+.c3-item.on::after{opacity:0}
+/* so os pontos, e centrados: sem legenda, nao ha o que alinhar do outro lado */
+.c3-baixo{display:flex;align-items:center;justify-content:center;padding-top:16px}
+.c3-dots{display:flex;gap:7px;flex-shrink:0}
+.c3-dot{width:7px;height:7px;border-radius:50%;border:0;padding:0;cursor:pointer;
+  background:rgba(55,64,71,.24);
+  transition:background-color 320ms var(--ease-curta),width 420ms var(--ease-saida)}
+.c3-dot:hover{background:rgba(55,64,71,.45)}
+/* o dot ativo NAO cresce de tamanho, ele vira um traco: circulo que incha
+   parece controle de app, e traco parece indice de editorial */
+.c3-dot.on{width:22px;border-radius:4px;background:var(--ouro)}
+@media(max-width:760px){ .c3-item{aspect-ratio:3/4} }
+
+/* ---- o botao de pausa da passagem automatica ----
+   Canto inferior ESQUERDO, e nao direito: na coluna lateral a borda direita da
+   foto e onde cai a espiada do proximo, e o botao ficava por cima dela. */
+.auto-pausa{position:absolute;left:12px;bottom:12px;z-index:5;
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(252,241,221,.5);
+  background:rgba(55,64,71,.708);backdrop-filter:blur(6px);color:var(--areia);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:11px;line-height:1;transition:background-color 220ms var(--ease-curta),opacity 320ms}
+.auto-pausa:hover{background:rgba(55,64,71,1)}
+.auto-pausa[hidden]{display:none}
+/* o anel de progresso do tempo, fino e discreto: a pessoa ve que vai passar,
+   em vez de ser surpreendida */
+.auto-anel{position:absolute;inset:-1px;border-radius:50%;pointer-events:none}
+.auto-anel circle{fill:none;stroke:var(--ouro);stroke-width:2;
+  stroke-dasharray:132;stroke-dashoffset:132;transform:rotate(-90deg);transform-origin:50% 50%}
+.auto-rodando .auto-anel circle{animation:autoGira var(--auto-tempo,5s) linear infinite}
+@keyframes autoGira{from{stroke-dashoffset:132}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.auto-anel{display:none}}

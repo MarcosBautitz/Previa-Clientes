@@ -292,13 +292,38 @@ gtag("consent","default",{
       </div>
       <div>
         <h4>Áreas</h4>
+        <!-- A LISTA INTEIRA SAI DA TABELA `A.AREAS`, montada pelo
+             areas_rodape() do montar_site.py. Nao escrever <li> a mao aqui.
+
+             Ate 20/08/2026 so o DESTINO vinha da tabela: os seis pares
+             `#area-N` e os seis rotulos estavam fixos neste arquivo, e o par
+             indice-rotulo era um casamento por coincidencia. Medido pelo
+             revisor: movendo "Remoções" para o topo de areas.py, o rodape
+             passou a mandar "Íntima Feminina" para a intradermoterapia
+             capilar, com build limpo e nenhum aviso. Removendo uma area, o
+             caminhos() nao achava o marcador de indice 5 e ele saia literal na
+             pagina publicada, como ancora morta.
+
+             ATENCAO ao escrever comentario aqui: o caminhos() troca a sequencia
+             `href=` mais `#area-` ONDE QUER QUE ELA APARECA, inclusive dentro de
+             comentario HTML. Escrever o exemplo por extenso fazia o build
+             reescrever o proprio texto que explica o defeito, e ainda disparava
+             a conferencia de saida em cima de documentacao. Por isso o exemplo
+             acima esta em palavras, e nao em codigo.
+
+             O marcador `#area-N` FICA, porque quem aplica o `base` de cada
+             uma das 22 paginas e o caminhos(), e ele precisa de algo para
+             trocar. O que mudou e que agora o N e o rotulo nascem juntos, da
+             mesma linha da tabela. Area com um procedimento so vai direto na
+             pagina dele, area com varios abre a cortina; quem sabe disso e a
+             tabela, nao este arquivo. -->
         <ul>
-          <li><a href="../procedimentos/">Facial</a></li>
-          <li><a href="../procedimentos/">Corporal e Facial</a></li>
-          <li><a href="../procedimentos/">Harmonização Corporal</a></li>
-          <li><a href="../procedimentos/">Capilar</a></li>
-          <li><a href="../procedimentos/">Íntima Feminina</a></li>
-          <li><a href="../procedimentos/">Remoções</a></li>
+          <li><a href="../procedimentos/#c0">Facial</a></li>
+          <li><a href="../procedimentos/#c1">Corporal e Facial</a></li>
+          <li><a href="../procedimentos/#c2">Harmonização Corporal</a></li>
+          <li><a href="../procedimentos/intradermoterapia-capilar/">Capilar</a></li>
+          <li><a href="../procedimentos/harmonizacao-intima/">Íntima Feminina</a></li>
+          <li><a href="../procedimentos/#c5">Remoções</a></li>
         </ul>
       </div>
       <div>
@@ -785,13 +810,78 @@ gtag("consent","default",{
 (function(){
   var ds = document.querySelectorAll(".cortina");
   if(!ds.length){ return; }
+
+  /* Fechar de proposito NAO e a mesma coisa que a pessoa apertar Esc, e o
+     <dialog> nao sabe a diferenca: os dois disparam o mesmo evento `close`.
+     A marca vai no PROPRIO elemento, e nao numa variavel de trava, porque
+     close() ENFILEIRA o evento em vez de dispara-lo na hora: uma trava
+     sincrona ja estaria solta quando o evento finalmente chegasse. */
+  function fecha(o){ o.__nos = true; o.close(); }
+  function fechaTodas(){
+    Array.prototype.forEach.call(ds, function(o){ if(o.open){ fecha(o); } });
+  }
+
+  function limpaHash(){
+    /* pathname + search, e nao so pathname: quem chega em
+       /procedimentos/?utm_source=ig e abre e fecha uma cortina ficava sem o
+       utm, e a campanha perdia a atribuicao no meio da visita. */
+    if(location.hash){ history.replaceState(null, "", location.pathname + location.search); }
+  }
+
+  /* A TELA E FUNCAO DO HASH, e nao do ultimo clique. E o que faz Voltar e
+     Avancar baterem com a URL. Antes o popstate so FECHAVA tudo: voltar de
+     #c1 para #c0 mostrava a lista de areas com #c0 na barra de enderecos, e
+     Avancar nunca reabria nada, porque nao havia o que abrir. */
+  function sincroniza(){
+    var id = (location.hash || "").slice(1);
+    var alvo = /^c[0-9]+$/.test(id) ? document.getElementById(id) : null;
+    Array.prototype.forEach.call(ds, function(o){ if(o.open && o !== alvo){ fecha(o); } });
+    if(alvo && !alvo.open){ alvo.showModal(); }
+  }
+
   function abre(id){
     var d = document.getElementById(id);
     if(!d){ return; }
-    Array.prototype.forEach.call(ds, function(o){ if(o.open){ o.close(); } });
-    d.showModal();
-    if(location.hash !== "#"+id){ history.pushState(null,"","#"+id); }
+    Array.prototype.forEach.call(ds, function(o){ if(o.open && o !== d){ fecha(o); } });
+    if(!d.open){ d.showModal(); }
+    if(location.hash !== "#"+id){
+      /* `nivel` conta quantas entradas de historico SAO NOSSAS e estao
+         empilhadas neste momento. O X desfaz exatamente esse tanto, entao
+         abrir Facial, pular para Corporal e fechar devolve o historico ao
+         estado anterior em vez de deixar tres entradas mortas. O marcador
+         mora no history.state porque ele viaja com a entrada: depois de um
+         Voltar, o state lido ja e o da entrada certa. */
+      var st = history.state;
+      var nivel = (st && st.cortina) ? ((st.nivel || 1) + 1) : 1;
+      history.pushState({cortina:id, nivel:nivel}, "", "#"+id);
+    }
   }
+
+  /* Fechar A PEDIDO DA PESSOA: no X, no "Voltar as areas" ou no Esc.
+     Se o hash foi posto pelo abre(), desfaz no historico em vez de empilhar
+     mais uma entrada. Antes cada abre-e-fecha deixava tres entradas, e os
+     dois primeiros Voltar nao mudavam nada na tela.
+     Se o hash veio de FORA, de um link de area no rodape de outra pagina,
+     nao existe entrada nossa para desfazer e voltar levaria a pessoa para
+     longe da pagina: ali o certo e so limpar o hash no lugar. */
+  var desfazendo = false;
+  function fecharPeloUsuario(){
+    var st = history.state;
+    var nivel = (st && st.cortina) ? (st.nivel || 1) : 0;
+    if(nivel > 0){ desfazendo = true; history.go(-nivel); }
+    else { limpaHash(); }
+  }
+
+  /* Esc fecha o <dialog> nativamente e nada limpava a URL, entao sobrava #c0
+     pendurado: recarregar ou compartilhar aquele endereco reabria a cortina
+     que a pessoa tinha acabado de fechar de proposito. */
+  Array.prototype.forEach.call(ds, function(d){
+    d.addEventListener("close", function(){
+      if(d.__nos){ d.__nos = false; return; }   /* fechamos nos, ja tratado */
+      fecharPeloUsuario();                      /* foi Esc */
+    });
+  });
+
   document.querySelectorAll("[data-abre]").forEach(function(b){
     b.addEventListener("click", function(){ abre(b.dataset.abre); });
   });
@@ -800,13 +890,47 @@ gtag("consent","default",{
   });
   document.querySelectorAll("[data-fecha]").forEach(function(b){
     b.addEventListener("click", function(){
-      var d = b.closest("dialog"); if(d){ d.close(); }
-      if(location.hash){ history.pushState(null,"",location.pathname); }
+      var d = b.closest("dialog"); if(d){ fecha(d); }
+      fecharPeloUsuario();
     });
   });
-  /* o botao voltar do navegador fecha a cortina, que e o gesto que a pessoa tenta */
+
   window.addEventListener("popstate", function(){
-    Array.prototype.forEach.call(ds, function(o){ if(o.open){ o.close(); } });
+    /* o history.go(-n) do fecharPeloUsuario cai aqui, e ali a ordem e fechar
+       tudo e limpar, nao sincronizar: sincronizar reabriria a cortina de
+       baixo bem na hora em que a pessoa pediu para fechar. */
+    if(desfazendo){ desfazendo = false; fechaTodas(); limpaHash(); return; }
+    sincroniza();
+  });
+
+  /* Chegando de OUTRA pagina com #c0 na URL, a cortina abre sozinha. E disso
+     que os seis links de area do rodape vivem: eles apontam para
+     `procedimentos/#c<i>`, e sem isto cairiam na lista de areas, que e
+     exatamente o que o pedido de 20/08/2026 mandou parar de fazer.
+     E a MESMA sincroniza() do popstate, de proposito: uma logica so decide o
+     que fica aberto, seja na carga, no Voltar ou no Avancar. */
+  sincroniza();
+
+  /* Na PROPRIA pagina de procedimentos o mesmo link e um pulo de ancora: o
+     navegador troca o hash e nao recarrega nada, entao a sincroniza() da
+     carga nunca roda de novo. Interceptar o clique resolve, e e mais seguro
+     que ouvir hashchange, que dispararia junto com o popstate acima e
+     brigaria com ele pelo estado da cortina. */
+  document.addEventListener("click", function(ev){
+    /* Deixa passar tudo que NAO e um clique simples de abrir aqui. cmd, ctrl,
+       shift e alt sao pedidos de abrir em aba, em janela ou de baixar, e
+       botao que nao seja o principal idem. Cortar isso sem olhar quebrou o
+       cmd+clique em "Facial" no rodape, que parou de abrir aba nova e passou
+       a abrir a cortina na aba atual. `ev.button` truthy, e nao !== 0, porque
+       evento sintetico sem botao devolve undefined e cairia fora sozinho. */
+    if(ev.defaultPrevented || ev.button){ return; }
+    if(ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey){ return; }
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href*="#c"]') : null;
+    if(!a || a.target){ return; }   /* target="_blank" e escolha do link, nao nossa */
+    var id = (a.getAttribute("href") || "").split("#")[1] || "";
+    if(!/^c[0-9]+$/.test(id) || !document.getElementById(id)){ return; }
+    ev.preventDefault();
+    abre(id);
   });
 })();
 </script>

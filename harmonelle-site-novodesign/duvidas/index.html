@@ -330,13 +330,38 @@ gtag("consent","default",{
       </div>
       <div>
         <h4>Áreas</h4>
+        <!-- A LISTA INTEIRA SAI DA TABELA `A.AREAS`, montada pelo
+             areas_rodape() do montar_site.py. Nao escrever <li> a mao aqui.
+
+             Ate 20/08/2026 so o DESTINO vinha da tabela: os seis pares
+             `#area-N` e os seis rotulos estavam fixos neste arquivo, e o par
+             indice-rotulo era um casamento por coincidencia. Medido pelo
+             revisor: movendo "Remoções" para o topo de areas.py, o rodape
+             passou a mandar "Íntima Feminina" para a intradermoterapia
+             capilar, com build limpo e nenhum aviso. Removendo uma area, o
+             caminhos() nao achava o marcador de indice 5 e ele saia literal na
+             pagina publicada, como ancora morta.
+
+             ATENCAO ao escrever comentario aqui: o caminhos() troca a sequencia
+             `href=` mais `#area-` ONDE QUER QUE ELA APARECA, inclusive dentro de
+             comentario HTML. Escrever o exemplo por extenso fazia o build
+             reescrever o proprio texto que explica o defeito, e ainda disparava
+             a conferencia de saida em cima de documentacao. Por isso o exemplo
+             acima esta em palavras, e nao em codigo.
+
+             O marcador `#area-N` FICA, porque quem aplica o `base` de cada
+             uma das 22 paginas e o caminhos(), e ele precisa de algo para
+             trocar. O que mudou e que agora o N e o rotulo nascem juntos, da
+             mesma linha da tabela. Area com um procedimento so vai direto na
+             pagina dele, area com varios abre a cortina; quem sabe disso e a
+             tabela, nao este arquivo. -->
         <ul>
-          <li><a href="../procedimentos/">Facial</a></li>
-          <li><a href="../procedimentos/">Corporal e Facial</a></li>
-          <li><a href="../procedimentos/">Harmonização Corporal</a></li>
-          <li><a href="../procedimentos/">Capilar</a></li>
-          <li><a href="../procedimentos/">Íntima Feminina</a></li>
-          <li><a href="../procedimentos/">Remoções</a></li>
+          <li><a href="../procedimentos/#c0">Facial</a></li>
+          <li><a href="../procedimentos/#c1">Corporal e Facial</a></li>
+          <li><a href="../procedimentos/#c2">Harmonização Corporal</a></li>
+          <li><a href="../procedimentos/intradermoterapia-capilar/">Capilar</a></li>
+          <li><a href="../procedimentos/harmonizacao-intima/">Íntima Feminina</a></li>
+          <li><a href="../procedimentos/#c5">Remoções</a></li>
         </ul>
       </div>
       <div>

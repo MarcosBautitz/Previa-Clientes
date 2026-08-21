@@ -313,7 +313,23 @@ gtag("consent","default",{
           <a class="btn btn-wa revela" data-copy="PROC-CAP-CTA" data-wa="proc-capilar" href="https://wa.me/5547997546362?text=Oi!%20Vim%20pelo%20site%20e%20tenho%20interesse%20em%20Intradermoterapia%20Capilar%2C%20para%20queda%20de%20cabelo.%20Quero%20agendar%20uma%20avalia%C3%A7%C3%A3o." target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg><span class="rot">Agendar avaliação capilar</span><span class="seta" aria-hidden="true"></span></a>
         </div>
         <div class="col-lado">
-          <div class="midia foto-pend revela" style="aspect-ratio:4/5"><span>FOTO PENDENTE: Intradermoterapia Capilar</span></div>
+          <div class="c3 revela" data-c3 tabindex="0" role="group" aria-roledescription="carrossel" aria-label="Fotos de Intradermoterapia Capilar">
+            <div class="c3-janela">
+              <div class="c3-trilho">
+                <div class="c3-item on"><img src="../../img/espaco_2.webp" width="560" height="700" loading="lazy" decoding="async" alt="Consultório de avaliação da Clínica Harmonelle, com mesa e poltronas"></div>
+                <div class="c3-item"><img src="../../img/sobre_dra.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Dra. Manu Maia, Biomédica Esteta, na Clínica Harmonelle"></div>
+                <div class="c3-item"><img src="../../img/espaco_4.webp" width="560" height="700" loading="lazy" decoding="async" alt="Sala de procedimentos da Clínica Harmonelle, com a maca preparada"></div>
+              </div>
+                <button class="auto-pausa" data-auto-pausa type="button" aria-label="Pausar passagem automática" hidden><svg class="auto-anel" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/></svg><span data-auto-rot>II</span></button>
+            </div>
+            <div class="c3-baixo">
+              <div class="c3-dots">
+                <button class="c3-dot on" type="button" aria-current="true" aria-label="Foto 1 de 3"></button>
+                <button class="c3-dot" type="button" aria-current="false" aria-label="Foto 2 de 3"></button>
+                <button class="c3-dot" type="button" aria-current="false" aria-label="Foto 3 de 3"></button>
+              </div>
+            </div>
+          </div>
           <div class="boxresumo revela">
             <div data-copy="PROC-CAP-BOX1"><b>Sessão</b><span>20 a 30 minutos</span></div>
             <div data-copy="PROC-CAP-BOX2"><b>Rotina</b><span>No mesmo dia, sem afastamento, com sensibilidade no couro cabeludo nas primeiras horas</span></div>
@@ -359,13 +375,38 @@ gtag("consent","default",{
       </div>
       <div>
         <h4>Áreas</h4>
+        <!-- A LISTA INTEIRA SAI DA TABELA `A.AREAS`, montada pelo
+             areas_rodape() do montar_site.py. Nao escrever <li> a mao aqui.
+
+             Ate 20/08/2026 so o DESTINO vinha da tabela: os seis pares
+             `#area-N` e os seis rotulos estavam fixos neste arquivo, e o par
+             indice-rotulo era um casamento por coincidencia. Medido pelo
+             revisor: movendo "Remoções" para o topo de areas.py, o rodape
+             passou a mandar "Íntima Feminina" para a intradermoterapia
+             capilar, com build limpo e nenhum aviso. Removendo uma area, o
+             caminhos() nao achava o marcador de indice 5 e ele saia literal na
+             pagina publicada, como ancora morta.
+
+             ATENCAO ao escrever comentario aqui: o caminhos() troca a sequencia
+             `href=` mais `#area-` ONDE QUER QUE ELA APARECA, inclusive dentro de
+             comentario HTML. Escrever o exemplo por extenso fazia o build
+             reescrever o proprio texto que explica o defeito, e ainda disparava
+             a conferencia de saida em cima de documentacao. Por isso o exemplo
+             acima esta em palavras, e nao em codigo.
+
+             O marcador `#area-N` FICA, porque quem aplica o `base` de cada
+             uma das 22 paginas e o caminhos(), e ele precisa de algo para
+             trocar. O que mudou e que agora o N e o rotulo nascem juntos, da
+             mesma linha da tabela. Area com um procedimento so vai direto na
+             pagina dele, area com varios abre a cortina; quem sabe disso e a
+             tabela, nao este arquivo. -->
         <ul>
-          <li><a href="../../procedimentos/">Facial</a></li>
-          <li><a href="../../procedimentos/">Corporal e Facial</a></li>
-          <li><a href="../../procedimentos/">Harmonização Corporal</a></li>
-          <li><a href="../../procedimentos/">Capilar</a></li>
-          <li><a href="../../procedimentos/">Íntima Feminina</a></li>
-          <li><a href="../../procedimentos/">Remoções</a></li>
+          <li><a href="../../procedimentos/#c0">Facial</a></li>
+          <li><a href="../../procedimentos/#c1">Corporal e Facial</a></li>
+          <li><a href="../../procedimentos/#c2">Harmonização Corporal</a></li>
+          <li><a href="../../procedimentos/intradermoterapia-capilar/">Capilar</a></li>
+          <li><a href="../../procedimentos/harmonizacao-intima/">Íntima Feminina</a></li>
+          <li><a href="../../procedimentos/#c5">Remoções</a></li>
         </ul>
       </div>
       <div>
@@ -847,6 +888,191 @@ gtag("consent","default",{
   });
 })();
 </script>
+<script>
+/* ---------------------------------------------------------------------------
+   PASSAGEM AUTOMATICA. Modulo do prototipo, sem mudanca de comportamento.
 
+   Cinco cuidados, e cada um evita um jeito conhecido de autoplay irritar:
+     1. Passar a foto na mao NAO mata o automatico: ele so volta a contar do
+        zero, e o botao nunca some. Se a pessoa pausou NO BOTAO, continua
+        pausado, porque passar a foto na mao nao desfaz uma pausa pedida.
+     2. Pausa no hover e no foco de teclado, e volta ao sair.
+     3. So roda com o carrossel VISIVEL, por IntersectionObserver.
+     4. Para quando a aba perde o foco.
+     5. NAO comeca se a pessoa pediu menos movimento no sistema.
+
+   ARMADILHA DE TESTE, JA PAGA: medido por automacao o autoplay parece
+   quebrado, porque a aba fica com document.hidden=true e o IntersectionObserver
+   devolve isIntersecting:false. Sao os cuidados 3 e 4 pausando de proposito.
+   Medir document.hidden antes de "consertar".
+   --------------------------------------------------------------------------- */
+window.autoPassar = function(caixa, ir, total, tempo){
+  if(total < 2) return;
+  var reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var btn  = caixa.querySelector("[data-auto-pausa]");
+  var rot  = btn && btn.querySelector("[data-auto-rot]");
+  var anel = btn && btn.querySelector(".auto-anel circle");
+  var t = null, parado = reduz, naTela = false, i = 0;
+  var sobreMouse = false, sobreFoco = false, tocaram = false;
+
+  caixa.style.setProperty("--auto-tempo", (tempo/1000) + "s");
+  if(btn && !reduz) btn.hidden = false;
+
+  /* O anel e animacao CSS, e animacao CSS nao recomeca so porque o JavaScript
+     reiniciou o setInterval. Se ela nao for zerada, o anel mente sobre o tempo
+     que falta.
+
+     ARMADILHA MEDIDA: o truque classico de tirar a animacao, ler offsetWidth
+     para forcar reflow e devolver NAO funciona aqui. O anel e um <circle>, ou
+     seja SVGElement, e offsetWidth so existe em HTMLElement: a leitura devolve
+     undefined, reflow nenhum acontece, e a animacao segue de onde estava.
+     Medido: 11533ms viraram 12533ms depois do clique, em vez de voltar a zero.
+     A Web Animations API zera direto e vale para SVG. O caminho antigo fica de
+     reserva, agora lendo offsetWidth do BOTAO, que e HTML de verdade. */
+  function zerarAnel(){
+    if(!anel) return;
+    var anims = anel.getAnimations ? anel.getAnimations() : [];
+    if(anims.length){ anims.forEach(function(a){ a.currentTime = 0; }); return; }
+    anel.style.animation = "none";
+    void btn.offsetWidth;
+    anel.style.animation = "";
+  }
+
+  function tocar(){
+    if(parado || sobreMouse || sobreFoco || !naTela || document.hidden) return;
+    clearInterval(t);
+    caixa.classList.add("auto-rodando");
+    zerarAnel();
+    t = setInterval(function(){ i = (i + 1) % total; ir(i); }, tempo);
+  }
+  function segurar(){ clearInterval(t); t = null; caixa.classList.remove("auto-rodando"); }
+  function recontar(){ if(!parado) tocar(); }
+
+  /* O indice do modulo tem que acompanhar a navegacao manual. O ir() do
+     carrossel chama isto no fim. Sem isso, depois de a pessoa pular para a
+     foto 4 o automatico retomaria da 2. */
+  caixa.__autoIr = function(novo){ i = novo; };
+
+  caixa.addEventListener("click", function(e){
+    if(btn && btn.contains(e.target)) return;
+    recontar();
+  });
+  caixa.addEventListener("touchstart", function(){ tocaram = true; }, {passive:true});
+  caixa.addEventListener("touchend", function(e){
+    if(btn && btn.contains(e.target)) return;
+    sobreMouse = false;   /* toque nao pode deixar um hover falso pendurado */
+    recontar();
+  }, {passive:true});
+  caixa.addEventListener("keydown", function(e){
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight") recontar();
+  });
+
+  caixa.addEventListener("mouseenter", function(){
+    /* tela de toque emite mouseenter falso depois do tap, e ele congelaria o
+       automatico no celular para sempre, porque nunca vem o mouseleave */
+    if(tocaram) return;
+    sobreMouse = true; segurar();
+  });
+  caixa.addEventListener("mouseleave", function(){ sobreMouse = false; tocar(); });
+  caixa.addEventListener("focusin", function(e){
+    /* :focus-visible separa teclado de clique. Sem essa distincao, clicar no
+       ponto deixa o foco NELE, nada tira o foco de la, e o automatico ficaria
+       congelado para sempre logo depois do primeiro clique. */
+    var teclado = true;
+    try{ teclado = e.target.matches(":focus-visible"); }catch(_e){ }
+    if(!teclado) return;
+    sobreFoco = true; segurar();
+  });
+  caixa.addEventListener("focusout", function(){ sobreFoco = false; tocar(); });
+
+  new IntersectionObserver(function(es){
+    naTela = es[0].isIntersecting;
+    naTela ? tocar() : segurar();
+  }, {threshold:.35}).observe(caixa);
+
+  document.addEventListener("visibilitychange", function(){ document.hidden ? segurar() : tocar(); });
+
+  /* o botao, exigencia da WCAG 2.2.2, e ele NUNCA some */
+  if(btn) btn.addEventListener("click", function(e){
+    e.stopPropagation();
+    parado = !parado;
+    if(rot) rot.textContent = parado ? "\u25B6" : "II";
+    btn.setAttribute("aria-label", parado ? "Retomar passagem autom\u00e1tica" : "Pausar passagem autom\u00e1tica");
+    parado ? segurar() : tocar();
+  });
+};
+</script>
+<script>
+/* ---------------------------------------------------------------------------
+   O CARROSSEL EM SI: deslize com espiada do proximo.
+   --------------------------------------------------------------------------- */
+(function(){
+  document.querySelectorAll("[data-c3]").forEach(function(c){
+    var trilho = c.querySelector(".c3-trilho");
+    var itens  = c.querySelectorAll(".c3-item");
+    var dots   = c.querySelectorAll(".c3-dot");
+    var n = itens.length, i = 0;
+    if(n < 2) return;
+    function largura(){ return itens[0].getBoundingClientRect().width + 12; }
+    function ir(novo){
+      i = Math.max(0, Math.min(n - 1, novo));
+      trilho.style.transform = "translateX(" + (-i * largura()) + "px)";
+      itens.forEach(function(t, k){ t.classList.toggle("on", k === i); });
+      dots.forEach(function(d, k){
+        d.classList.toggle("on", k === i);
+        /* o ponto ativo tem que DIZER que esta ativo, e nao so parecer: sem
+           isso o leitor de tela anuncia cinco botoes iguais e nenhum atual */
+        d.setAttribute("aria-current", k === i ? "true" : "false");
+      });
+      if(c.__autoIr) c.__autoIr(i);
+    }
+    dots.forEach(function(d, k){ d.addEventListener("click", function(){ ir(k); }); });
+
+    /* Clicar na foto que ESPIA passa para ela. Pedido do Marcos em 20/08/2026:
+       a faixa que aparece na lateral e o alvo mais obvio da peca, e ate entao
+       nao fazia nada, so o ponto la embaixo funcionava. */
+    itens.forEach(function(t, k){
+      t.addEventListener("click", function(){
+        /* arraste no celular termina emitindo um click sintetico. Sem esta
+           guarda, o dedo passaria DUAS fotos: uma pelo gesto, outra pelo
+           click que vem depois dele. */
+        if(arrastou || k === i) return;
+        ir(k);
+      });
+    });
+    c.addEventListener("keydown", function(e){
+      if(e.key === "ArrowRight") ir(i+1);
+      if(e.key === "ArrowLeft")  ir(i-1);
+    });
+
+    /* ARRASTE EM TEMPO REAL: o trilho acompanha o dedo, e nao espera o gesto
+       terminar. E o detalhe que faz o componente parecer nativo, e nao web. */
+    var x0 = null, base = 0, arrastou = false;
+    trilho.addEventListener("touchstart", function(e){
+      x0 = e.touches[0].clientX; base = -i * largura();
+      trilho.classList.add("arrastando");
+    }, {passive:true});
+    trilho.addEventListener("touchmove", function(e){
+      if(x0 === null) return;
+      var d = e.touches[0].clientX - x0;
+      /* resistencia nas pontas, para o trilho nao sair voando no vazio */
+      if((i === 0 && d > 0) || (i === n-1 && d < 0)) d *= .32;
+      trilho.style.transform = "translateX(" + (base + d) + "px)";
+    }, {passive:true});
+    trilho.addEventListener("touchend", function(e){
+      if(x0 === null) return;
+      var d = e.changedTouches[0].clientX - x0;
+      trilho.classList.remove("arrastando");
+      arrastou = Math.abs(d) > 6;
+      setTimeout(function(){ arrastou = false; }, 400);
+      ir(i + (Math.abs(d) > largura() * .18 ? (d < 0 ? 1 : -1) : 0));
+      x0 = null;
+    }, {passive:true});
+    window.addEventListener("resize", function(){ ir(i); });
+    ir(0);
+    if(window.autoPassar) window.autoPassar(c, ir, n, 5000);
+  });
+})();
+</script>
 </body>
 </html>
