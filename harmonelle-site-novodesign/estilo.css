@@ -1283,6 +1283,125 @@ body.consent-aberto .acao-fixa{display:none}
    ao mesmo tempo e ruido, e o de cookies tem precedencia legal */
 body.consent-aberto .balao{display:none}
 
+/* ===== O ROTULO DE FAQ VIROU <h2> E A PERGUNTA VIROU <h3>, 2026-08-20 =====
+   Duas linhas, e as duas existem so para o desenho NAO mudar. A troca e de
+   semantica: o `bloco_faq()` do conteudo.py passou a emitir
+   `<h2 class="eyebrow">` no lugar de `<p class="eyebrow">` e
+   `<summary><h3>Pergunta</h3></summary>` no lugar de `<summary>Pergunta</summary>`.
+   Trocar a TAG traz junto o que o seletor de tipo diz sobre ela, e e ai que
+   este tipo de mudanca costuma vazar um pixel sem ninguem ver.
+
+   1. `h1,h2,h3` do v3.parte2.css declara `line-height:1.15`. O `.eyebrow` nao
+      declara line-height nenhum, entao o `<p>` de hoje herda o 1.65 do body.
+      Virando `<h2>`, e so essa propriedade que muda, porque `.eyebrow` ja
+      vence o seletor de tipo em font-family, font-size, font-weight e
+      letter-spacing por especificidade (0,1,0 contra 0,0,1). Sem esta linha o
+      rotulo encolheria de 19,8px de caixa para 13,8px, e a distancia dele para
+      o acordeao mudaria em 6px.
+
+      POR QUE `h2.eyebrow` E NAO `.eyebrow` SECO, que era o pedido: `.eyebrow`
+      seco valeria tambem para os `<p class="eyebrow">` que continuam sendo
+      `<p>`, e ali ele deixaria de ser no-op no dia em que um deles estiver
+      dentro de um container com line-height proprio, porque escrever o valor
+      mata a heranca. Ha caso disso na pagina: o eyebrow do `.caso` so escapa
+      hoje porque `.caso p` tem especificidade maior. Escopado na tag, a regra
+      alcanca exatamente os elementos que mudaram de tag e prova sozinha que
+      nao toca em mais nada. O `h3.eyebrow` entra junto, para a leva 2 nao
+      precisar voltar aqui.
+
+   2. `<summary>` e `display:flex`, entao o texto ja era um item de flex
+      anonimo e o `<h3>` ocupa o mesmo lugar, sem mexer no
+      `justify-content:space-between` nem no `+` que gira. O que o `<h3>`
+      traria de novo e tipografia: `font-size` de UA, 1.17em sobre os 19px do
+      `.faq summary`, ou seja 22,2px, e o mesmo `line-height:1.15`.
+      `font:inherit` devolve os sete longhands da abreviacao ao valor do
+      `<summary>`, que e onde eles ja estavam. Nao use `font-size:inherit`
+      sozinho aqui: o line-height escaparia. */
+h2.eyebrow,h3.eyebrow{line-height:1.65}
+.faq summary h3{font:inherit}
+
+/* ===== LEVA 2 DA ESTRUTURA SEMANTICA, 2026-08-20 =====
+   Sete regras. Cinco existem so para o desenho NAO mudar quando um elemento
+   troca de tag, e duas sao componente novo. O CSS entra aqui, e nao no
+   `v3.parte2.css` nem no `v3.parte3.css`, pelo mesmo motivo da leva 1: as duas
+   partes grandes ficam fechadas e tudo que a reforma toca fica num lugar so.
+
+   1. O `<b>` que abre o bloco de objecao virou `<h2>`. A pergunta ali e a
+      frase que a pessoa digita no Google, e era o unico texto de peso da
+      pagina sem nivel nenhum. A regra `.objecao b` do v3.parte2.css nao alcanca
+      `<h2>`, entao ela e repetida aqui, mais os DOIS valores que o `<b>`
+      recebia por heranca e que o `<h2>` perderia para o seletor de tipo:
+      `line-height` 1.65, que vinha do body contra o 1.15 de `h1,h2,h3`, e
+      `letter-spacing` 0, contra o -.012em de `h1,h2`. Sem os dois, a caixa
+      encolhe e a frase aperta, em dezesseis paginas. */
+.objecao h2{font-family:var(--serif);font-size:18px;font-weight:500;font-style:italic;
+            display:block;margin-bottom:8px;line-height:1.65;letter-spacing:0}
+
+/*  2. O `<p class="grupo-titulo">Tambem em ...</p>` do bloco de irmas virou
+       `<h2>`. Esta e a que muda a tela de verdade se faltar: `.grupo-titulo`
+       nao declara `font-family`, entao `h1,h2,h3{font-family:var(--serif)}`
+       assumiria e o rotulo trocaria de Inter para Fraunces em catorze paginas.
+       O `line-height` cai junto, pelo mesmo motivo do item 1. Todo o resto,
+       tamanho, peso, caixa alta, tracking e cor, ja esta em `.grupo-titulo`,
+       que vence o seletor de tipo por especificidade. */
+.grupo-titulo{font-family:var(--sans);line-height:1.65}
+
+/*  3. O `.oque` deixou de ser um paragrafo unico e passou a ser de dois a
+       quatro, cortados nos pontos que o texto ja tinha. Nenhuma palavra
+       mudou. O reset global zera margem de tudo, entao sem esta linha os
+       paragrafos colariam e a quebra nao existiria na tela. */
+.proc .oque + .oque{margin-top:14px}
+
+/*  4. O quadro de dados virou lista de definicao: `<div class="boxresumo">`
+       com `<b>`/`<span>` passou a `<dl>` com `<div><dt>/<dd></div>`, que e a
+       forma valida de agrupar par em `<dl>`. Os `<div>` de dentro continuam
+       casando com `.boxresumo div`, e a grade nao muda. `<dd>` traz
+       `margin-inline-start:40px` do agente de usuario, e quem o mata e o
+       `*{margin:0}` do reset, que roda antes. */
+.boxresumo dt{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+              color:var(--cafe);margin-bottom:8px;font-weight:500}
+.boxresumo dd{display:block;font-family:var(--serif);font-size:17px;font-weight:400;
+              line-height:1.35;color:var(--ink)}
+
+/*  5. COMPONENTE NOVO: os dois `<h2>` de estrutura das dezesseis, "O que e o
+       <nome>" e "Para quem e".
+
+       O tamanho e a decisao: 22px fica entre o gancho, que e clamp de 27 a
+       38px, e o corpo, que e 16px. Isso e deck editorial, e nao subtitulo de
+       blog: se ele encostar no gancho, a pagina passa a ter dois titulos
+       disputando, e o gancho e a voz da marca.
+
+       Familia, peso e tracking NAO sao declarados de proposito: vem de
+       `h1,h2,h3` e de `h1,h2`, que sao as mesmas regras que vestem o gancho.
+       Assim os dois andam juntos se a tipografia da marca mudar.
+
+       As duas linhas de `margin` seguintes existem porque o reset zera tudo e
+       porque margem de irmaos colapsa: sem elas o deck cairia 26px abaixo do
+       gancho, longe demais, e o "Para quem e" ficaria 22px acima da lista que
+       ele nomeia, ou seja, mais perto do texto de cima do que do de baixo.
+
+       O `max-width:26em`, e nao um valor em `ch`, foi MEDIDO nos dezesseis: a
+       coluna esquerda do `.grid2` da 533px na largura cheia, e 26em a 22px da
+       572px, ou seja, quem manda na quebra e a coluna, e nao esta linha. Com
+       34ch, que foi a primeira tentativa, tres titulos quebravam deixando uma
+       palavra orfa na segunda linha: Hipro em 499px, PEIM em 497px e Remocao
+       de Tatuagem em 520px, todos cabendo na coluna. Hoje quinze cabem em uma
+       linha e so o do Scizer, com 661px, quebra em duas equilibradas. O `em`
+       ainda serve de teto se a coluna crescer. */
+.proc .proc-sub{font-size:22px;line-height:1.3;color:var(--ink);
+                max-width:26em;margin:26px 0 10px}
+.proc .gancho + .proc-sub{margin-top:0}
+.proc .proc-sub + .paraquem{margin-top:0}
+
+/*  6. COMPONENTE NOVO: a linha de assinatura, igual nas dezesseis, entre o
+       bloco de objecao e o CTA. Tamanho de nota, e nao de corpo: ela e
+       credencial, e nao argumento, e competir com o texto do bloco de objecao
+       logo acima seria o erro. `margin-top:0` deixa o gap de 26px vir do
+       proprio `.objecao`, que ja o tinha para o botao. */
+.proc .assina{font-size:14.5px;line-height:1.6;color:var(--ink2);
+              max-width:58ch;margin:0 0 22px}
+.proc .assina b{font-weight:500;color:var(--ink)}
+
 /* A pagina do arquivo sempre aparece. Ver o comentario em caminhos(). */
 .pagina{display:block}
 .pendente{border-left:2px solid var(--caramelo);padding:4px 0 4px 18px;margin-bottom:22px}
