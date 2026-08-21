@@ -1295,6 +1295,21 @@ body.consent-aberto .balao{display:none}
 .viz:hover{color:var(--cafe)}
 .viz:hover .seta{width:24px}
 
+/* ===== MIGALHA, bloco 1 do gabarito de 20/08 =====
+   Contraste medido antes de escrever, porque 12,5px e texto pequeno e o
+   minimo e 4,5:1: --ink2 da 5,46:1 e passa. O filete do link vai em
+   --contorno, 3,45:1, e nao em --linha, 1,62:1: aqui o sublinhado e a UNICA
+   indicacao de que o item e clicavel, porque o reset global zera o
+   text-decoration de todo <a>, e a propria nota do token manda usar
+   --contorno nesse caso. O separador nao e texto, e por isso vai em <i>
+   com aria-hidden, para o leitor de tela nao ler "maior que" tres vezes. */
+.migalha{font-size:12.5px;line-height:1.6;color:var(--ink2);margin-bottom:16px}
+.migalha a{color:var(--ink2);border-bottom:1px solid var(--contorno);padding-bottom:1px;
+  transition:color 180ms var(--ease-curta)}
+.migalha a:hover{color:var(--cafe)}
+.migalha i{font-style:normal;margin:0 8px;color:var(--ink2);opacity:.6}
+.migalha .aqui{color:var(--ink)}
+
 .al{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;
   gap:4px 18px;padding:14px 0;border-bottom:1px solid rgba(252,241,221,.18);
   align-items:center}
@@ -1350,10 +1365,11 @@ body.consent-aberto .balao{display:none}
 .cor-chips{position:sticky;bottom:0;background:var(--ink);
   border-top:1px solid rgba(252,241,221,.14);padding:12px 0}
 .cor-chips ul{display:flex;gap:8px;overflow-x:auto;padding:0 24px;list-style:none}
+.cor-chips a,
 .cor-chips button{white-space:nowrap;background:none;cursor:pointer;
   border:1px solid rgba(252,241,221,.28);color:var(--claro-escuro2);
   padding:10px 16px;font-size:12px;font-family:var(--sans);min-height:44px}
-.cor-chips button.ativo{border-color:var(--caramelo);color:var(--areia)}
+.cor-chips .ativo{border-color:var(--caramelo);color:var(--areia)}
 @media(max-width:820px){
   .bl{min-height:24vh}
   .cor-grade{grid-template-columns:1fr;padding-top:20px}
